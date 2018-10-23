@@ -101,6 +101,7 @@
             this.btn_NyPodcast.TabIndex = 1;
             this.btn_NyPodcast.Text = "Ny...";
             this.btn_NyPodcast.UseVisualStyleBackColor = true;
+            this.btn_NyPodcast.Click += new System.EventHandler(this.btn_NyPodcast_Click);
             // 
             // lv_Kategorier
             // 
@@ -318,6 +319,7 @@
             this.Controls.Add(this.lv_Podcast);
             this.Name = "Form1";
             this.Text = "Form1";
+            this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

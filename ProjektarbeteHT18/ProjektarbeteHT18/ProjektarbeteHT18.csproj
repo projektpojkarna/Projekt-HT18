@@ -46,7 +46,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Business Logic Layer\IPodcastEpisode.cs" />
+    <Compile Include="Business Logic Layer\Buisiness.cs" />
+    <Compile Include="Business Logic Layer\CategoryList.cs" />
+    <Compile Include="Business Logic Layer\Interface\IBusiness.cs" />
+    <Compile Include="Business Logic Layer\Interface\ICategory.cs" />
+    <Compile Include="Business Logic Layer\Interface\IPodcastEpisode.cs" />
+    <Compile Include="Business Logic Layer\Interface\IPodCastFeed.cs" />
+    <Compile Include="Business Logic Layer\PodCastEpisodeList.cs" />
+    <Compile Include="Business Logic Layer\PodCastFeedList.cs" />
     <Compile Include="Presentation Layer\Form1.cs">
       <SubType>Form</SubType>
     </Compile>
