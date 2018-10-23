@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ProjektarbeteHT18.Business_Logic_Layer
 {
-    class IPodcastEpisode
+    interface IPodcastEpisode
     {
 
     }
