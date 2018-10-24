@@ -65,12 +65,15 @@
             this.columnHeader3,
             this.columnHeader4});
             this.lv_Podcast.ForeColor = System.Drawing.Color.Black;
+            this.lv_Podcast.FullRowSelect = true;
             this.lv_Podcast.Location = new System.Drawing.Point(12, 12);
+            this.lv_Podcast.MultiSelect = false;
             this.lv_Podcast.Name = "lv_Podcast";
             this.lv_Podcast.Size = new System.Drawing.Size(674, 167);
             this.lv_Podcast.TabIndex = 0;
             this.lv_Podcast.UseCompatibleStateImageBehavior = false;
             this.lv_Podcast.View = System.Windows.Forms.View.Details;
+            this.lv_Podcast.SelectedIndexChanged += new System.EventHandler(this.lv_Podcast_SelectedIndexChanged);
             // 
             // columnHeader1
             // 

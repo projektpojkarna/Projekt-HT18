@@ -35,6 +35,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -52,7 +53,9 @@
     <Compile Include="Business Logic Layer\Interface\ICategory.cs" />
     <Compile Include="Business Logic Layer\Interface\IPodcastEpisode.cs" />
     <Compile Include="Business Logic Layer\Interface\IPodCastFeed.cs" />
+    <Compile Include="Business Logic Layer\PodCastEpisode.cs" />
     <Compile Include="Business Logic Layer\PodCastEpisodeList.cs" />
+    <Compile Include="Business Logic Layer\PodCastFeed.cs" />
     <Compile Include="Business Logic Layer\PodCastFeedList.cs" />
     <Compile Include="Presentation Layer\Form1.cs">
       <SubType>Form</SubType>
