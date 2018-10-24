@@ -18,7 +18,7 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
             bool feedExists = ContainsURL(url);
             if(feedExists)
             {
-                throw new Exception; //TODO: Lägg till egen exception här!
+                throw new Exception(); //TODO: Lägg till egen exception här!
             }
             else
             {
