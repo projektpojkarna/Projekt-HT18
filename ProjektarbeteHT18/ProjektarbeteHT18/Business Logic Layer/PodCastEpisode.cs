@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ProjektarbeteHT18.Business_Logic_Layer
 {
-    class PodCastEpisode : IPodcastEpisode
+    class PodCastEpisode : IPodCastEpisode
     {
         public string Description { get; set; }
         public string FileURL { get; set ; }

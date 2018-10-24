@@ -14,6 +14,7 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
     {
         public PodCastFeedList<PodCastFeed> PodCastFeedList { get; set;}
 
+
         public Buisiness()
         {
             PodCastFeedList = new PodCastFeedList<PodCastFeed>();
@@ -22,7 +23,7 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
         //Laddar in en podcast feed
         public async Task<PodCastFeed> ReadRSSAsync(string url)
         {
-            var episodes = new PodCastEpisodeList<IPodcastEpisode>();
+            var episodes = new PodCastEpisodeList<IPodCastEpisode>();
             using (XmlReader reader = XmlReader.Create(url, new XmlReaderSettings() { Async = true }))
             {
                 var feed = SyndicationFeed.Load(reader);
@@ -31,9 +32,9 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
                 
                 foreach (SyndicationItem item in feed.Items)
                 {
-                    String name = item.Title.Text;
-                    String description = item.Summary.Text;
-                    String podUrl = "";
+                    string name = item.Title.Text;
+                    string description = item.Summary.Text;
+                    string podUrl = "";
                     var episode = new PodCastEpisode(description, podUrl, name);
                     episodes.Add(episode);
                 }

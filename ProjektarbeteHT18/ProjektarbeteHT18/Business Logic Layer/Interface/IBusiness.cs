@@ -14,7 +14,7 @@ namespace ProjektarbeteHT18.Business_Logic_Layer.Interface
 
         IPodCastFeed ReadPodCastRSS(string url); //Läser in RSS och skapar PodCast-objekt samt lägger till i listan
 
-        PodCastEpisodeList<IPodcastEpisode> GetPodCastEpisodes(IPodCastFeed pod);
+        PodCastEpisodeList<IPodCastEpisode> GetPodCastEpisodes(IPodCastFeed pod);
 
         void AddPodCast(IPodCastFeed pod);
         

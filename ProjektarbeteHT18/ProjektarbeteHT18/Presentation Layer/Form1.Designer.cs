@@ -47,13 +47,15 @@
             this.label3 = new System.Windows.Forms.Label();
             this.btn_TaBortPodcast = new System.Windows.Forms.Button();
             this.btn_SparaPodcast = new System.Windows.Forms.Button();
-            this.lv_PodcastAvsnitt = new System.Windows.Forms.ListView();
+            this.lvPodCastEpisodes = new System.Windows.Forms.ListView();
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.lb_PodcastAvsnitt = new System.Windows.Forms.Label();
-            this.lb_PodcastInfo = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.lb_Podcast = new System.Windows.Forms.Label();
+            this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader7 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.txtEpisodeDescription = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // lv_Podcast
@@ -98,7 +100,7 @@
             // btn_NyPodcast
             // 
             this.btn_NyPodcast.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_NyPodcast.Location = new System.Drawing.Point(368, 252);
+            this.btn_NyPodcast.Location = new System.Drawing.Point(12, 252);
             this.btn_NyPodcast.Name = "btn_NyPodcast";
             this.btn_NyPodcast.Size = new System.Drawing.Size(102, 35);
             this.btn_NyPodcast.TabIndex = 1;
@@ -108,6 +110,7 @@
             // 
             // lv_Kategorier
             // 
+            this.lv_Kategorier.FullRowSelect = true;
             this.lv_Kategorier.Location = new System.Drawing.Point(744, 32);
             this.lv_Kategorier.Name = "lv_Kategorier";
             this.lv_Kategorier.Size = new System.Drawing.Size(316, 131);
@@ -209,7 +212,7 @@
             // btn_TaBortPodcast
             // 
             this.btn_TaBortPodcast.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_TaBortPodcast.Location = new System.Drawing.Point(584, 252);
+            this.btn_TaBortPodcast.Location = new System.Drawing.Point(441, 252);
             this.btn_TaBortPodcast.Name = "btn_TaBortPodcast";
             this.btn_TaBortPodcast.Size = new System.Drawing.Size(102, 35);
             this.btn_TaBortPodcast.TabIndex = 13;
@@ -219,20 +222,27 @@
             // btn_SparaPodcast
             // 
             this.btn_SparaPodcast.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_SparaPodcast.Location = new System.Drawing.Point(476, 252);
+            this.btn_SparaPodcast.Location = new System.Drawing.Point(333, 252);
             this.btn_SparaPodcast.Name = "btn_SparaPodcast";
             this.btn_SparaPodcast.Size = new System.Drawing.Size(102, 35);
             this.btn_SparaPodcast.TabIndex = 14;
             this.btn_SparaPodcast.Text = "Spara";
             this.btn_SparaPodcast.UseVisualStyleBackColor = true;
             // 
-            // lv_PodcastAvsnitt
+            // lvPodCastEpisodes
             // 
-            this.lv_PodcastAvsnitt.Location = new System.Drawing.Point(16, 318);
-            this.lv_PodcastAvsnitt.Name = "lv_PodcastAvsnitt";
-            this.lv_PodcastAvsnitt.Size = new System.Drawing.Size(486, 164);
-            this.lv_PodcastAvsnitt.TabIndex = 15;
-            this.lv_PodcastAvsnitt.UseCompatibleStateImageBehavior = false;
+            this.lvPodCastEpisodes.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader5,
+            this.columnHeader7});
+            this.lvPodCastEpisodes.FullRowSelect = true;
+            this.lvPodCastEpisodes.Location = new System.Drawing.Point(16, 318);
+            this.lvPodCastEpisodes.MultiSelect = false;
+            this.lvPodCastEpisodes.Name = "lvPodCastEpisodes";
+            this.lvPodCastEpisodes.Size = new System.Drawing.Size(670, 164);
+            this.lvPodCastEpisodes.TabIndex = 15;
+            this.lvPodCastEpisodes.UseCompatibleStateImageBehavior = false;
+            this.lvPodCastEpisodes.View = System.Windows.Forms.View.Details;
+            this.lvPodCastEpisodes.SelectedIndexChanged += new System.EventHandler(this.lv_PodcastAvsnitt_SelectedIndexChanged);
             // 
             // label4
             // 
@@ -258,20 +268,11 @@
             // 
             this.lb_PodcastAvsnitt.AutoSize = true;
             this.lb_PodcastAvsnitt.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lb_PodcastAvsnitt.Location = new System.Drawing.Point(739, 306);
+            this.lb_PodcastAvsnitt.Location = new System.Drawing.Point(730, 305);
             this.lb_PodcastAvsnitt.Name = "lb_PodcastAvsnitt";
             this.lb_PodcastAvsnitt.Size = new System.Drawing.Size(70, 25);
             this.lb_PodcastAvsnitt.TabIndex = 18;
             this.lb_PodcastAvsnitt.Text = "label6";
-            // 
-            // lb_PodcastInfo
-            // 
-            this.lb_PodcastInfo.AutoSize = true;
-            this.lb_PodcastInfo.Location = new System.Drawing.Point(741, 359);
-            this.lb_PodcastInfo.Name = "lb_PodcastInfo";
-            this.lb_PodcastInfo.Size = new System.Drawing.Size(46, 17);
-            this.lb_PodcastInfo.TabIndex = 19;
-            this.lb_PodcastInfo.Text = "label7";
             // 
             // label6
             // 
@@ -293,18 +294,38 @@
             this.lb_Podcast.TabIndex = 21;
             this.lb_Podcast.Text = "label7";
             // 
+            // columnHeader5
+            // 
+            this.columnHeader5.Text = "Avsnitt";
+            // 
+            // columnHeader7
+            // 
+            this.columnHeader7.Text = "Titel";
+            this.columnHeader7.Width = 273;
+            // 
+            // txtEpisodeDescription
+            // 
+            this.txtEpisodeDescription.Cursor = System.Windows.Forms.Cursors.No;
+            this.txtEpisodeDescription.Location = new System.Drawing.Point(735, 334);
+            this.txtEpisodeDescription.Multiline = true;
+            this.txtEpisodeDescription.Name = "txtEpisodeDescription";
+            this.txtEpisodeDescription.ReadOnly = true;
+            this.txtEpisodeDescription.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.txtEpisodeDescription.Size = new System.Drawing.Size(359, 139);
+            this.txtEpisodeDescription.TabIndex = 22;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1107, 494);
+            this.Controls.Add(this.txtEpisodeDescription);
             this.Controls.Add(this.lb_Podcast);
             this.Controls.Add(this.label6);
-            this.Controls.Add(this.lb_PodcastInfo);
             this.Controls.Add(this.lb_PodcastAvsnitt);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
-            this.Controls.Add(this.lv_PodcastAvsnitt);
+            this.Controls.Add(this.lvPodCastEpisodes);
             this.Controls.Add(this.btn_SparaPodcast);
             this.Controls.Add(this.btn_TaBortPodcast);
             this.Controls.Add(this.label3);
@@ -349,13 +370,15 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button btn_TaBortPodcast;
         private System.Windows.Forms.Button btn_SparaPodcast;
-        private System.Windows.Forms.ListView lv_PodcastAvsnitt;
+        private System.Windows.Forms.ListView lvPodCastEpisodes;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label lb_PodcastAvsnitt;
-        private System.Windows.Forms.Label lb_PodcastInfo;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label lb_Podcast;
+        private System.Windows.Forms.ColumnHeader columnHeader5;
+        private System.Windows.Forms.ColumnHeader columnHeader7;
+        private System.Windows.Forms.TextBox txtEpisodeDescription;
     }
 }
 
