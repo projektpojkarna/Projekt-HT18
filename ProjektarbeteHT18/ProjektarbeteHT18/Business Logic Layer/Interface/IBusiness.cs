@@ -10,7 +10,7 @@ namespace ProjektarbeteHT18.Business_Logic_Layer.Interface
     {
        
         PodCastFeedList<IPodCastFeed> ListOfPods { get; set; }
-        CategoryList<ICategory> ListOfCategories { get; set; }
+        CategoryList ListOfCategories { get; set; }
 
         IPodCastFeed ReadPodCastRSS(string url); //Läser in RSS och skapar PodCast-objekt samt lägger till i listan
 
