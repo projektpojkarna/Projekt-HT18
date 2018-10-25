@@ -8,40 +8,35 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
 {
     class CategoryList : List<string>
     {
-
-        
-
-        public void AddCategory(string namn)
-        {
-            if (this.Contains(namn))
+            public void AddCategory(string namn)
             {
-                
-            }
-            else
-            {
-                this.Add(namn);
-            }
-        
-        }
-
-        public void RemoveCategory(string namn)
-        {
-            this.Remove(namn);
-        }
-
-        public void ReNameCategory(string namn, string change)
-        {
-            for (int i = 0; i<this.Count; i++)
-            
-            {
-                if (this[i].Contains(namn))
+                if (this.Contains(namn))
                 {
-                    this[i] = change;
+                    //Kasta exception
+                }
+                else
+                {
+                    this.Add(namn);
+                }
+
+            }
+
+            public void RemoveCategory(string namn)
+            {
+                this.Remove(namn);
+            }
+
+            public void ReNameCategory(string namn, string change)
+            {
+                for (int i = 0; i < this.Count; i++)
+
+                {
+                    if (this[i].Contains(namn))
+                    {
+                        this[i] = change;
+                    }
                 }
             }
-        }
-
-    
     }
 }
 

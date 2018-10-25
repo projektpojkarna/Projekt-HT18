@@ -9,7 +9,7 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
     class PodCastFeed : IPodCastFeed
     {
 
-        public PodCastFeed(string url, String name, PodCastEpisodeList<IPodcastEpisode> episodes)
+        public PodCastFeed(string url, String name, PodCastEpisodeList<IPodCastEpisode> episodes)
         {
            
             Url = url;
@@ -28,7 +28,7 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
         public string Name { get; set; }
         public ICategory Category { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public int UpdateInterval { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public PodCastEpisodeList<IPodcastEpisode> Episodes { get; set; }
+        public PodCastEpisodeList<IPodCastEpisode> Episodes { get; set; }
 
     }
 }
