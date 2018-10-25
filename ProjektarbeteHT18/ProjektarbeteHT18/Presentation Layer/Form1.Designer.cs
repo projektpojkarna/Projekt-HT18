@@ -34,8 +34,8 @@
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.btn_NyPodcast = new System.Windows.Forms.Button();
-            this.lv_Kategorier = new System.Windows.Forms.ListView();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.lv_Categories = new System.Windows.Forms.ListView();
+            this.txt_Category = new System.Windows.Forms.TextBox();
             this.btn_NyKategori = new System.Windows.Forms.Button();
             this.btn_SparaKategori = new System.Windows.Forms.Button();
             this.btn_TaBortKategori = new System.Windows.Forms.Button();
@@ -54,6 +54,7 @@
             this.lb_PodcastInfo = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.lb_Podcast = new System.Windows.Forms.Label();
+            this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.SuspendLayout();
             // 
             // lv_Podcast
@@ -106,21 +107,27 @@
             this.btn_NyPodcast.UseVisualStyleBackColor = true;
             this.btn_NyPodcast.Click += new System.EventHandler(this.btn_NyPodcast_Click);
             // 
-            // lv_Kategorier
+            // lv_Categories
             // 
-            this.lv_Kategorier.Location = new System.Drawing.Point(744, 32);
-            this.lv_Kategorier.Name = "lv_Kategorier";
-            this.lv_Kategorier.Size = new System.Drawing.Size(316, 131);
-            this.lv_Kategorier.TabIndex = 2;
-            this.lv_Kategorier.UseCompatibleStateImageBehavior = false;
+            this.lv_Categories.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader5});
+            this.lv_Categories.FullRowSelect = true;
+            this.lv_Categories.Location = new System.Drawing.Point(744, 32);
+            this.lv_Categories.MultiSelect = false;
+            this.lv_Categories.Name = "lv_Categories";
+            this.lv_Categories.Size = new System.Drawing.Size(316, 131);
+            this.lv_Categories.TabIndex = 2;
+            this.lv_Categories.UseCompatibleStateImageBehavior = false;
+            this.lv_Categories.View = System.Windows.Forms.View.Details;
+            this.lv_Categories.SelectedIndexChanged += new System.EventHandler(this.lv_Categories_SelectedIndexChanged);
             // 
-            // textBox1
+            // txt_Category
             // 
-            this.textBox1.Location = new System.Drawing.Point(744, 179);
-            this.textBox1.Multiline = true;
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(316, 26);
-            this.textBox1.TabIndex = 3;
+            this.txt_Category.Location = new System.Drawing.Point(744, 179);
+            this.txt_Category.Multiline = true;
+            this.txt_Category.Name = "txt_Category";
+            this.txt_Category.Size = new System.Drawing.Size(316, 26);
+            this.txt_Category.TabIndex = 3;
             // 
             // btn_NyKategori
             // 
@@ -131,6 +138,7 @@
             this.btn_NyKategori.TabIndex = 4;
             this.btn_NyKategori.Text = "Ny...";
             this.btn_NyKategori.UseVisualStyleBackColor = true;
+            this.btn_NyKategori.Click += new System.EventHandler(this.btn_NyKategori_Click);
             // 
             // btn_SparaKategori
             // 
@@ -141,6 +149,7 @@
             this.btn_SparaKategori.TabIndex = 5;
             this.btn_SparaKategori.Text = "Spara";
             this.btn_SparaKategori.UseVisualStyleBackColor = true;
+            this.btn_SparaKategori.Click += new System.EventHandler(this.btn_SparaKategori_Click);
             // 
             // btn_TaBortKategori
             // 
@@ -151,6 +160,7 @@
             this.btn_TaBortKategori.TabIndex = 6;
             this.btn_TaBortKategori.Text = "Ta bort...";
             this.btn_TaBortKategori.UseVisualStyleBackColor = true;
+            this.btn_TaBortKategori.Click += new System.EventHandler(this.btn_TaBortKategori_Click);
             // 
             // txt_Url
             // 
@@ -175,6 +185,7 @@
             this.cb_Kategori.Name = "cb_Kategori";
             this.cb_Kategori.Size = new System.Drawing.Size(161, 24);
             this.cb_Kategori.TabIndex = 9;
+            this.cb_Kategori.SelectedIndexChanged += new System.EventHandler(this.cb_Kategori_SelectedIndexChanged);
             // 
             // label1
             // 
@@ -293,6 +304,10 @@
             this.lb_Podcast.TabIndex = 21;
             this.lb_Podcast.Text = "label7";
             // 
+            // columnHeader5
+            // 
+            this.columnHeader5.Text = "Namn";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -316,8 +331,8 @@
             this.Controls.Add(this.btn_TaBortKategori);
             this.Controls.Add(this.btn_SparaKategori);
             this.Controls.Add(this.btn_NyKategori);
-            this.Controls.Add(this.textBox1);
-            this.Controls.Add(this.lv_Kategorier);
+            this.Controls.Add(this.txt_Category);
+            this.Controls.Add(this.lv_Categories);
             this.Controls.Add(this.btn_NyPodcast);
             this.Controls.Add(this.lv_Podcast);
             this.Name = "Form1";
@@ -336,8 +351,8 @@
         private System.Windows.Forms.ColumnHeader columnHeader3;
         private System.Windows.Forms.ColumnHeader columnHeader4;
         private System.Windows.Forms.Button btn_NyPodcast;
-        private System.Windows.Forms.ListView lv_Kategorier;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.ListView lv_Categories;
+        private System.Windows.Forms.TextBox txt_Category;
         private System.Windows.Forms.Button btn_NyKategori;
         private System.Windows.Forms.Button btn_SparaKategori;
         private System.Windows.Forms.Button btn_TaBortKategori;
@@ -356,6 +371,7 @@
         private System.Windows.Forms.Label lb_PodcastInfo;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label lb_Podcast;
+        private System.Windows.Forms.ColumnHeader columnHeader5;
     }
 }
 

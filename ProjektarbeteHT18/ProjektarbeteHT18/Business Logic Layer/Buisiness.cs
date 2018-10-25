@@ -13,10 +13,12 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
     class Buisiness
     {
         public PodCastFeedList<PodCastFeed> PodCastFeedList { get; set;}
+      
 
         public Buisiness()
         {
             PodCastFeedList = new PodCastFeedList<PodCastFeed>();
+            
         }
 
         //Laddar in en podcast feed
