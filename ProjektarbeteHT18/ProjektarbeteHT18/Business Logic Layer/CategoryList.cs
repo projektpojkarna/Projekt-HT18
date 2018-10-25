@@ -8,22 +8,35 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
 {
     class CategoryList : List<string>
     {
-        //TODO: en metod för att lägga till som kontrollerar att kategori-namnet inte finns
-
-        public void AddCategory(string name)
-        {
-            if (this.Contains(name))
+            public void AddCategory(string namn)
             {
-                throw new Exception();
+                if (this.Contains(namn))
+                {
+                    //Kasta exception
+                }
+                else
+                {
+                    this.Add(namn);
+                }
+
             }
-            else
+
+            public void RemoveCategory(string namn)
             {
-                this.Add(name);
+                this.Remove(namn);
             }
 
+            public void ReNameCategory(string namn, string change)
+            {
+                for (int i = 0; i < this.Count; i++)
 
-
-        }
+                {
+                    if (this[i].Contains(namn))
+                    {
+                        this[i] = change;
+                    }
+                }
+            }
     }
 }
 

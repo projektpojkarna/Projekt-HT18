@@ -8,13 +8,15 @@ using System.Drawing;
 
 namespace ProjektarbeteHT18
 {
-    public partial class Form1 : Form
+    public partial class frmRSSReader : Form
     {
         Buisiness b;
+        CategoryList CategoryList;
 
-        public Form1()
+        public frmRSSReader()
         {
             b = new Buisiness();
+            CategoryList = new CategoryList();
             InitializeComponent();
 
 
@@ -63,6 +65,27 @@ namespace ProjektarbeteHT18
             }
         }
 
+        private void UpdateCategory()
+        {
+            lv_Categories.Items.Clear();
+            cb_Kategori.Items.Clear();
+            cb_Kategori.ResetText();
+            foreach (string c in CategoryList)
+            {
+
+                ListViewItem lvItem = new ListViewItem(new[] { c });
+
+                lv_Categories.Items.Add(lvItem);
+                cb_Kategori.Items.Add(c);
+            }
+            if(cb_Kategori.Items.Count >= 1)
+            {
+                cb_Kategori.SelectedIndex = 0;
+            }
+            cb_Kategori.Refresh();
+
+        }
+
 
         private async void btn_NyPodcast_Click(object sender, EventArgs e)
         {
@@ -89,6 +112,37 @@ namespace ProjektarbeteHT18
                 var episode = (PodCastEpisode)b.PodCastFeedList[selectedPodIndex].Episodes[selectedEpisodeIndex];
                 UpdateEpisodeDetails(episode);
             }
+        }
+
+        private void btn_NyKategori_Click(object sender, EventArgs e)
+        {
+            CategoryList.AddCategory(txt_Category.Text);
+            UpdateCategory();
+            txt_Category.Clear();
+        }
+
+        private void btn_SparaKategori_Click(object sender, EventArgs e)
+        {
+            string selected = lv_Categories.FocusedItem.Text;
+            CategoryList.ReNameCategory(selected, txt_Category.Text);
+            UpdateCategory();
+            txt_Category.Clear();
+        }
+
+        private void lv_Kategorier_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if(lv_Categories.FocusedItem != null)
+            {
+                string selected = lv_Categories.FocusedItem.Text;
+                txt_Category.Text = selected;
+            }
+        }
+
+        private void btn_TaBortKategori_Click(object sender, EventArgs e)
+        {
+            string selected = lv_Categories.FocusedItem.Text;
+            CategoryList.RemoveCategory(selected);
+            UpdateCategory();
         }
     }
 }

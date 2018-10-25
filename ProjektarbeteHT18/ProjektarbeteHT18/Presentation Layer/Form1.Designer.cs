@@ -1,6 +1,6 @@
 ﻿namespace ProjektarbeteHT18
 {
-    partial class Form1
+    partial class frmRSSReader
     {
         /// <summary>
         /// Required designer variable.
@@ -34,8 +34,8 @@
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.btn_NyPodcast = new System.Windows.Forms.Button();
-            this.lv_Kategorier = new System.Windows.Forms.ListView();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.lv_Categories = new System.Windows.Forms.ListView();
+            this.txt_Category = new System.Windows.Forms.TextBox();
             this.btn_NyKategori = new System.Windows.Forms.Button();
             this.btn_SparaKategori = new System.Windows.Forms.Button();
             this.btn_TaBortKategori = new System.Windows.Forms.Button();
@@ -48,14 +48,15 @@
             this.btn_TaBortPodcast = new System.Windows.Forms.Button();
             this.btn_SparaPodcast = new System.Windows.Forms.Button();
             this.lvPodCastEpisodes = new System.Windows.Forms.ListView();
+            this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader7 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.lb_PodcastAvsnitt = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.lb_Podcast = new System.Windows.Forms.Label();
-            this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader7 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.txtEpisodeDescription = new System.Windows.Forms.TextBox();
+            this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.SuspendLayout();
             // 
             // lv_Podcast
@@ -108,22 +109,27 @@
             this.btn_NyPodcast.UseVisualStyleBackColor = true;
             this.btn_NyPodcast.Click += new System.EventHandler(this.btn_NyPodcast_Click);
             // 
-            // lv_Kategorier
+            // lv_Categories
             // 
-            this.lv_Kategorier.FullRowSelect = true;
-            this.lv_Kategorier.Location = new System.Drawing.Point(744, 32);
-            this.lv_Kategorier.Name = "lv_Kategorier";
-            this.lv_Kategorier.Size = new System.Drawing.Size(316, 131);
-            this.lv_Kategorier.TabIndex = 2;
-            this.lv_Kategorier.UseCompatibleStateImageBehavior = false;
+            this.lv_Categories.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader6});
+            this.lv_Categories.FullRowSelect = true;
+            this.lv_Categories.Location = new System.Drawing.Point(744, 32);
+            this.lv_Categories.MultiSelect = false;
+            this.lv_Categories.Name = "lv_Categories";
+            this.lv_Categories.Size = new System.Drawing.Size(316, 131);
+            this.lv_Categories.TabIndex = 2;
+            this.lv_Categories.UseCompatibleStateImageBehavior = false;
+            this.lv_Categories.View = System.Windows.Forms.View.Details;
+            this.lv_Categories.SelectedIndexChanged += new System.EventHandler(this.lv_Kategorier_SelectedIndexChanged);
             // 
-            // textBox1
+            // txt_Category
             // 
-            this.textBox1.Location = new System.Drawing.Point(744, 179);
-            this.textBox1.Multiline = true;
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(316, 26);
-            this.textBox1.TabIndex = 3;
+            this.txt_Category.Location = new System.Drawing.Point(744, 179);
+            this.txt_Category.Multiline = true;
+            this.txt_Category.Name = "txt_Category";
+            this.txt_Category.Size = new System.Drawing.Size(316, 26);
+            this.txt_Category.TabIndex = 3;
             // 
             // btn_NyKategori
             // 
@@ -134,6 +140,7 @@
             this.btn_NyKategori.TabIndex = 4;
             this.btn_NyKategori.Text = "Ny...";
             this.btn_NyKategori.UseVisualStyleBackColor = true;
+            this.btn_NyKategori.Click += new System.EventHandler(this.btn_NyKategori_Click);
             // 
             // btn_SparaKategori
             // 
@@ -144,6 +151,7 @@
             this.btn_SparaKategori.TabIndex = 5;
             this.btn_SparaKategori.Text = "Spara";
             this.btn_SparaKategori.UseVisualStyleBackColor = true;
+            this.btn_SparaKategori.Click += new System.EventHandler(this.btn_SparaKategori_Click);
             // 
             // btn_TaBortKategori
             // 
@@ -154,6 +162,7 @@
             this.btn_TaBortKategori.TabIndex = 6;
             this.btn_TaBortKategori.Text = "Ta bort...";
             this.btn_TaBortKategori.UseVisualStyleBackColor = true;
+            this.btn_TaBortKategori.Click += new System.EventHandler(this.btn_TaBortKategori_Click);
             // 
             // txt_Url
             // 
@@ -166,7 +175,7 @@
             // cb_frekvens
             // 
             this.cb_frekvens.FormattingEnabled = true;
-            this.cb_frekvens.Location = new System.Drawing.Point(333, 222);
+            this.cb_frekvens.Location = new System.Drawing.Point(319, 222);
             this.cb_frekvens.Name = "cb_frekvens";
             this.cb_frekvens.Size = new System.Drawing.Size(169, 24);
             this.cb_frekvens.TabIndex = 8;
@@ -174,10 +183,12 @@
             // cb_Kategori
             // 
             this.cb_Kategori.FormattingEnabled = true;
-            this.cb_Kategori.Location = new System.Drawing.Point(525, 219);
+            this.cb_Kategori.Location = new System.Drawing.Point(503, 219);
+            this.cb_Kategori.MaxDropDownItems = 50;
             this.cb_Kategori.Name = "cb_Kategori";
-            this.cb_Kategori.Size = new System.Drawing.Size(161, 24);
+            this.cb_Kategori.Size = new System.Drawing.Size(183, 24);
             this.cb_Kategori.TabIndex = 9;
+            this.cb_Kategori.Text = "Lägg till en kategori först..";
             // 
             // label1
             // 
@@ -193,7 +204,7 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.4F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(330, 199);
+            this.label2.Location = new System.Drawing.Point(316, 199);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(167, 17);
             this.label2.TabIndex = 11;
@@ -203,7 +214,7 @@
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.4F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(522, 199);
+            this.label3.Location = new System.Drawing.Point(508, 199);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(69, 17);
             this.label3.TabIndex = 12;
@@ -212,7 +223,7 @@
             // btn_TaBortPodcast
             // 
             this.btn_TaBortPodcast.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_TaBortPodcast.Location = new System.Drawing.Point(441, 252);
+            this.btn_TaBortPodcast.Location = new System.Drawing.Point(427, 252);
             this.btn_TaBortPodcast.Name = "btn_TaBortPodcast";
             this.btn_TaBortPodcast.Size = new System.Drawing.Size(102, 35);
             this.btn_TaBortPodcast.TabIndex = 13;
@@ -222,7 +233,7 @@
             // btn_SparaPodcast
             // 
             this.btn_SparaPodcast.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_SparaPodcast.Location = new System.Drawing.Point(333, 252);
+            this.btn_SparaPodcast.Location = new System.Drawing.Point(319, 252);
             this.btn_SparaPodcast.Name = "btn_SparaPodcast";
             this.btn_SparaPodcast.Size = new System.Drawing.Size(102, 35);
             this.btn_SparaPodcast.TabIndex = 14;
@@ -243,6 +254,15 @@
             this.lvPodCastEpisodes.UseCompatibleStateImageBehavior = false;
             this.lvPodCastEpisodes.View = System.Windows.Forms.View.Details;
             this.lvPodCastEpisodes.SelectedIndexChanged += new System.EventHandler(this.lv_PodcastAvsnitt_SelectedIndexChanged);
+            // 
+            // columnHeader5
+            // 
+            this.columnHeader5.Text = "Avsnitt";
+            // 
+            // columnHeader7
+            // 
+            this.columnHeader7.Text = "Titel";
+            this.columnHeader7.Width = 273;
             // 
             // label4
             // 
@@ -294,15 +314,6 @@
             this.lb_Podcast.TabIndex = 21;
             this.lb_Podcast.Text = "label7";
             // 
-            // columnHeader5
-            // 
-            this.columnHeader5.Text = "Avsnitt";
-            // 
-            // columnHeader7
-            // 
-            this.columnHeader7.Text = "Titel";
-            this.columnHeader7.Width = 273;
-            // 
             // txtEpisodeDescription
             // 
             this.txtEpisodeDescription.Cursor = System.Windows.Forms.Cursors.No;
@@ -314,7 +325,12 @@
             this.txtEpisodeDescription.Size = new System.Drawing.Size(359, 139);
             this.txtEpisodeDescription.TabIndex = 22;
             // 
-            // Form1
+            // columnHeader6
+            // 
+            this.columnHeader6.Text = "Kategorinamn";
+            this.columnHeader6.Width = 275;
+            // 
+            // frmRSSReader
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -337,12 +353,12 @@
             this.Controls.Add(this.btn_TaBortKategori);
             this.Controls.Add(this.btn_SparaKategori);
             this.Controls.Add(this.btn_NyKategori);
-            this.Controls.Add(this.textBox1);
-            this.Controls.Add(this.lv_Kategorier);
+            this.Controls.Add(this.txt_Category);
+            this.Controls.Add(this.lv_Categories);
             this.Controls.Add(this.btn_NyPodcast);
             this.Controls.Add(this.lv_Podcast);
-            this.Name = "Form1";
-            this.Text = "Form1";
+            this.Name = "frmRSSReader";
+            this.Text = "Lägg till en kategori först..";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -357,8 +373,8 @@
         private System.Windows.Forms.ColumnHeader columnHeader3;
         private System.Windows.Forms.ColumnHeader columnHeader4;
         private System.Windows.Forms.Button btn_NyPodcast;
-        private System.Windows.Forms.ListView lv_Kategorier;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.ListView lv_Categories;
+        private System.Windows.Forms.TextBox txt_Category;
         private System.Windows.Forms.Button btn_NyKategori;
         private System.Windows.Forms.Button btn_SparaKategori;
         private System.Windows.Forms.Button btn_TaBortKategori;
@@ -379,6 +395,7 @@
         private System.Windows.Forms.ColumnHeader columnHeader5;
         private System.Windows.Forms.ColumnHeader columnHeader7;
         private System.Windows.Forms.TextBox txtEpisodeDescription;
+        private System.Windows.Forms.ColumnHeader columnHeader6;
     }
 }
 
