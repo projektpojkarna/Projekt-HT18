@@ -6,20 +6,33 @@ using System.Threading.Tasks;
 using ProjektarbeteHT18.Business_Logic_Layer.Interface;
 using System.ServiceModel.Syndication;
 using System.Xml;
-
+using System.Timers;
+using System.Diagnostics;
 
 namespace ProjektarbeteHT18.Business_Logic_Layer
 {
     class FeedManager
     {
         public PodCastFeedList<PodCastFeed> PodCastFeedList { get; set; }
+
         public delegate void PodCastAddedHandler();
         public event PodCastAddedHandler OnPodAdded;
+
+        private Timer t;
+        private Stopwatch sw;
+        int ElapsedMinutes;
 
 
         public FeedManager()
         {
             PodCastFeedList = new PodCastFeedList<PodCastFeed>();
+
+            sw = new Stopwatch();
+            DateTime dt = new DateTime();
+            t = new Timer();
+            t.Interval = 30000;
+            t.Elapsed += new ElapsedEventHandler(RefreshPod);
+            t.Start();
         }
 
         //Lägger till en ny podcast
@@ -43,11 +56,36 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
                 });
         }
 
+        //Lägger till det senaste avsnittet i listan
+        public async void RefreshPod(object source, ElapsedEventArgs eArgs)
+        {
+            ElapsedMinutes +=5;
+
+            var needsUpdate = PodCastFeedList.Where((p) => (ElapsedMinutes % p.UpdateInterval == 0)).ToList();
+
+            foreach(PodCastFeed p in needsUpdate)
+            {
+                var updatedFeed = await ReadRSSAsync(p.Url);
+
+                p.Episodes.Clear();
+                p.Episodes = PodCastEpisodeList<PodCastEpisode>.FromSyndicationItems(updatedFeed.Items);
+                
+                //var freshPod = PodCastFeed.FromSyndicationFeed(updatedFeed);
+                //PodCastFeedList.Remove(p);
+                //PodCastFeedList.Add(freshPod);
+            }
+
+            if(OnPodAdded != null)
+            {
+                FirePodAdded();
+            }
+        }
+
         private async Task<SyndicationFeed> ReadRSSAsync(string url)
         {
-            var episodes = new PodCastEpisodeList<IPodCastEpisode>();
             var syndicationFeed = await Task.Run(() => {
-                using (XmlReader reader = XmlReader.Create(url, new XmlReaderSettings() { Async = true }))
+            var settings = new XmlReaderSettings() { Async = true, DtdProcessing = DtdProcessing.Parse, MaxCharactersFromEntities = 1024};
+            using (XmlReader reader = XmlReader.Create(url, settings))
                 {
                     var f = SyndicationFeed.Load(reader);
                     reader.Close();

@@ -113,11 +113,6 @@ namespace ProjektarbeteHT18
             var category = cb_Kategori.SelectedItem.ToString();
             int.TryParse(cb_frekvens.SelectedItem.ToString(), out int interval);
             await fm.AddNewPod(url, category, interval);
-
-
-            //var pod = await fm.ReadRSSAsync(url);
-            //pod.Category = cb_Kategori.SelectedItem.ToString();
-            //pod.UpdateInterval = int.Parse(cb_frekvens.SelectedItem.ToString());
         }
 
         private void lv_Podcast_SelectedIndexChanged(object sender, EventArgs e)
@@ -128,7 +123,7 @@ namespace ProjektarbeteHT18
             {
                 var selectedIndex = lv_Podcast.FocusedItem.Index;
                 var feed = fm.PodCastFeedList[selectedIndex];
-                txt_Url.Text = feed.Url;
+                txt_Url.Text = feed.Url;               
                 UpdateEpisodeList(feed);
             }
 

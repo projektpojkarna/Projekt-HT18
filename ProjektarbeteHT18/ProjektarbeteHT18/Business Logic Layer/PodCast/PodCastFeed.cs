@@ -17,12 +17,8 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
             var lastUpdated = feed.LastUpdatedTime;
 
             foreach (SyndicationItem item in feed.Items)
-            {  
-                string name = item.Title.Text;
-                string description = item.Summary.Text;
-                string episodeURL = "";
-                var episode = new PodCastEpisode(description, episodeURL, name);
-                episodes.Add(episode);
+            {
+                episodes.Add(PodCastEpisode.FromSyndicationItem(item));
             }
             return new PodCastFeed(feedURL, feedTitle, episodes, lastUpdated);
         }
