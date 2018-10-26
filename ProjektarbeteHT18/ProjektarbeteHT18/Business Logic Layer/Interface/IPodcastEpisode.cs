@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ProjektarbeteHT18.Business_Logic_Layer
 {
-    interface IPodCastEpisode
+   public  interface IPodCastEpisode
     {
         string Description { get; set; }
         string FileURL { get; set; }
