@@ -25,9 +25,12 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
         //Lägger till en ny podcast
         public async Task AddNewPod(string url, string category, int updateInterval)
         {
+            //TODO: Kolla först om poden finns!
+
                 //Läs in RSS-flöde, skapa podcast-objekt och lägg till i listan
-                await ReadRSSAsync(url).ContinueWith((p) => {
-                    var pod = p.Result;
+                await ReadRSSAsync(url).ContinueWith((feed) => {
+                    
+                    var pod = PodCastFeed.FromSyndicationFeed(feed.Result);
                     pod.Category = category;
                     pod.UpdateInterval = updateInterval;
                     PodCastFeedList.Add(pod);
@@ -40,29 +43,20 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
                 });
         }
 
-        private async Task<PodCastFeed> ReadRSSAsync(string url)
+        private async Task<SyndicationFeed> ReadRSSAsync(string url)
         {
             var episodes = new PodCastEpisodeList<IPodCastEpisode>();
-            var podCastFeed = await Task.Run(() => {
+            var syndicationFeed = await Task.Run(() => {
                 using (XmlReader reader = XmlReader.Create(url, new XmlReaderSettings() { Async = true }))
                 {
-                    var syndicationFeed = SyndicationFeed.Load(reader);
+                    var f = SyndicationFeed.Load(reader);
                     reader.Close();
-                    return PodCastFeed.FromSyndicationFeed(syndicationFeed);
+                    return f;
+                  
                 }
-            }); //.ContinueWith((f) => AddPodToList(f.Result))
-            return podCastFeed;
+            });
+            return syndicationFeed;
         }
-
-        /*
-        private void AddPodToList(PodCastFeed feed)
-        {
-            PodCastFeedList.Add(feed);
-            if(OnPodAdded != null)
-            {
-                FirePodAdded();
-            }
-        }*/
 
         //Metod för att hantera händelseanrop
         private void FirePodAdded()

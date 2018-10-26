@@ -79,7 +79,7 @@ namespace ProjektarbeteHT18
                 foreach (PodCastFeed p in fm.PodCastFeedList)
                 {
                     string numberOfEpisodes = p.Episodes.Count.ToString();
-                    ListViewItem lvItem = new ListViewItem(new[] { numberOfEpisodes, p.Name });
+                    ListViewItem lvItem = new ListViewItem(new[] { numberOfEpisodes, p.Name, p.UpdateInterval.ToString(), p.Category });
                     lv_Podcast.Items.Add(lvItem);
                 }
             }
@@ -110,13 +110,14 @@ namespace ProjektarbeteHT18
         private async void btn_NyPodcast_Click(object sender, EventArgs e)
         {
             var url = txt_Url.Text;
-            await fm.AddNewPod(url, "Kategori", 1000);
+            var category = cb_Kategori.SelectedItem.ToString();
+            int.TryParse(cb_frekvens.SelectedItem.ToString(), out int interval);
+            await fm.AddNewPod(url, category, interval);
+
 
             //var pod = await fm.ReadRSSAsync(url);
             //pod.Category = cb_Kategori.SelectedItem.ToString();
             //pod.UpdateInterval = int.Parse(cb_frekvens.SelectedItem.ToString());
-
-            UpdatePodList();
         }
 
         private void lv_Podcast_SelectedIndexChanged(object sender, EventArgs e)
