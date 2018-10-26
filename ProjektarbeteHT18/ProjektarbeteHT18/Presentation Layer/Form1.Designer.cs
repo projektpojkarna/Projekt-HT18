@@ -35,6 +35,7 @@
             this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.btn_NyPodcast = new System.Windows.Forms.Button();
             this.lv_Categories = new System.Windows.Forms.ListView();
+            this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.txt_Category = new System.Windows.Forms.TextBox();
             this.btn_NyKategori = new System.Windows.Forms.Button();
             this.btn_SparaKategori = new System.Windows.Forms.Button();
@@ -56,7 +57,7 @@
             this.label6 = new System.Windows.Forms.Label();
             this.lb_Podcast = new System.Windows.Forms.Label();
             this.txtEpisodeDescription = new System.Windows.Forms.TextBox();
-            this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.label7 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // lv_Podcast
@@ -123,6 +124,11 @@
             this.lv_Categories.View = System.Windows.Forms.View.Details;
             this.lv_Categories.SelectedIndexChanged += new System.EventHandler(this.lv_Kategorier_SelectedIndexChanged);
             // 
+            // columnHeader6
+            // 
+            this.columnHeader6.Text = "Kategorinamn";
+            this.columnHeader6.Width = 275;
+            // 
             // txt_Category
             // 
             this.txt_Category.Location = new System.Drawing.Point(744, 179);
@@ -175,10 +181,15 @@
             // cb_frekvens
             // 
             this.cb_frekvens.FormattingEnabled = true;
+            this.cb_frekvens.Items.AddRange(new object[] {
+            "5",
+            "10",
+            "15"});
             this.cb_frekvens.Location = new System.Drawing.Point(319, 222);
             this.cb_frekvens.Name = "cb_frekvens";
-            this.cb_frekvens.Size = new System.Drawing.Size(169, 24);
+            this.cb_frekvens.Size = new System.Drawing.Size(52, 24);
             this.cb_frekvens.TabIndex = 8;
+            this.cb_frekvens.Text = "Välj frekvens...";
             // 
             // cb_Kategori
             // 
@@ -206,9 +217,9 @@
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.4F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.Location = new System.Drawing.Point(316, 199);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(167, 17);
+            this.label2.Size = new System.Drawing.Size(127, 17);
             this.label2.TabIndex = 11;
-            this.label2.Text = "Uppdateringsfrekvens";
+            this.label2.Text = "Uppdatera var...";
             // 
             // label3
             // 
@@ -325,16 +336,21 @@
             this.txtEpisodeDescription.Size = new System.Drawing.Size(359, 139);
             this.txtEpisodeDescription.TabIndex = 22;
             // 
-            // columnHeader6
+            // label7
             // 
-            this.columnHeader6.Text = "Kategorinamn";
-            this.columnHeader6.Width = 275;
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(377, 225);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(58, 17);
+            this.label7.TabIndex = 23;
+            this.label7.Text = ":e minut";
             // 
             // frmRSSReader
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1107, 494);
+            this.Controls.Add(this.label7);
             this.Controls.Add(this.txtEpisodeDescription);
             this.Controls.Add(this.lb_Podcast);
             this.Controls.Add(this.label6);
@@ -396,6 +412,7 @@
         private System.Windows.Forms.ColumnHeader columnHeader7;
         private System.Windows.Forms.TextBox txtEpisodeDescription;
         private System.Windows.Forms.ColumnHeader columnHeader6;
+        private System.Windows.Forms.Label label7;
     }
 }
 

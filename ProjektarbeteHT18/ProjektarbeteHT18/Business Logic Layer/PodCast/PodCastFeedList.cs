@@ -10,7 +10,15 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
     {
         public IPodCastFeed GetPodByURL(string url)
         {
-            return this.Single((p) => p.Url == url);
+            try
+            {
+                return this.Single((p) => p.Url == url);
+            } catch(Exception e)
+            {
+
+            }
+            return null;
+
         }
 
         public void AddFeed(string url)
