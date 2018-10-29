@@ -13,7 +13,7 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
         {
             var episodes = new PodCastEpisodeList<IPodCastEpisode>();
             string feedTitle = feed.Title.Text;
-            var feedURL = feed.Links[0].Uri.ToString();
+            var feedURL = feed.Links.Single((p) => p.MediaType == "application/rss+xml").Uri.ToString();
             var lastUpdated = feed.LastUpdatedTime;
 
             foreach (SyndicationItem item in feed.Items)
