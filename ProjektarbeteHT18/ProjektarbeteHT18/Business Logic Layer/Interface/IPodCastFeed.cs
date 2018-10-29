@@ -12,6 +12,6 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
         string Name { get; set; }
         string Category { get; set; }
         int UpdateInterval { get; set; }
-        PodCastEpisodeList<IPodCastEpisode> Episodes { get; set; }
+        PodCastEpisodeList<PodCastEpisode> Episodes { get; set; }
     }
 }

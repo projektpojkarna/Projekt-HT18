@@ -375,6 +375,7 @@
             this.Controls.Add(this.lv_Podcast);
             this.Name = "frmRSSReader";
             this.Text = "Lägg till en kategori först..";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmRSSReader_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
             this.PerformLayout();

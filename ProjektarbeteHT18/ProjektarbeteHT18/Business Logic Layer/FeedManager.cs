@@ -8,6 +8,8 @@ using System.ServiceModel.Syndication;
 using System.Xml;
 using System.Timers;
 using System.Diagnostics;
+using Newtonsoft.Json;
+using System.IO;
 
 namespace ProjektarbeteHT18.Business_Logic_Layer
 {
@@ -33,6 +35,18 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
             t.Interval = 30000;
             t.Elapsed += new ElapsedEventHandler(RefreshPod);
             t.Start();
+        }
+
+        public void Serialize()
+        {
+            var fileName = "podurls.json";
+            var serializer = new JsonSerializer();
+            using (var writer = new StreamWriter(fileName))
+            using (var jsonWriter = new JsonTextWriter(writer))
+            {
+                var urls = PodCastFeedList.GetURLs();
+                serializer.Serialize(jsonWriter, urls);
+            }
         }
 
         //Lägger till en ny podcast

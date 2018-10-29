@@ -21,6 +21,11 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
 
         }
 
+        public List<string> GetURLs()
+        {
+            return this.Select((p) => p.Url).ToList();
+        }
+
         public void AddFeed(string url)
         {
             bool feedExists = ContainsURL(url);

@@ -11,8 +11,6 @@ namespace ProjektarbeteHT18
 {
     public partial class frmRSSReader : Form
     {
-        private string[] INTERVALS = new[] { "", "Var 5:e minut", "Var 10:e minut", "Var 15:e minut" };
-
         FeedManager fm;
         CategoryList CategoryList;
 
@@ -42,17 +40,11 @@ namespace ProjektarbeteHT18
         //Uppdaterar listan med podcastavsnitt
         private void UpdateEpisodeList(PodCastFeed feed)
         {
-            PodCastEpisodeList<IPodCastEpisode> epList = feed.Episodes;
-            var episodeNumber = epList.Count;
-            foreach (var episode in epList)
-            {
-                var displayEpisodeNumber = String.Format("#{0}",
-                                         episodeNumber.ToString());
-                episodeNumber--;
-                ListViewItem lvItem = new ListViewItem(new[] { displayEpisodeNumber, episode.Name });
-                lvPodCastEpisodes.Items.Add(lvItem);
-                UpdateEpisodeDetails(epList[0]);
-            }
+            PodCastEpisodeList<PodCastEpisode> epList = feed.Episodes;
+
+            lvPodCastEpisodes.Items.Clear();
+            lvPodCastEpisodes.Items.AddRange(epList.ToListViewItems());
+            UpdateEpisodeDetails(epList[0]);
         }
         
         //Uppdaterar listan med podcast-feeds         
@@ -171,6 +163,11 @@ namespace ProjektarbeteHT18
             string selected = lv_Categories.FocusedItem.Text;
             CategoryList.RemoveCategory(selected);
             UpdateCategory();
+        }
+
+        private void frmRSSReader_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            fm.Serialize();
         }
     }
 }
