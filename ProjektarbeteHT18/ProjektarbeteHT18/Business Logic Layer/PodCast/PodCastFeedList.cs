@@ -21,7 +21,7 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
 
         }
 
-        public List<string> GetURLs()
+        public List<string> PrepareSerialization()
         {
             return this.Select((p) => p.Url).ToList();
         }

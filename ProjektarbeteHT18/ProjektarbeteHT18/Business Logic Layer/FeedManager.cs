@@ -21,31 +21,44 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
         public event PodCastAddedHandler OnPodAdded;
 
         private Timer t;
-        private Stopwatch sw;
         int ElapsedMinutes;
 
+        Serializer<PodCastFeedList<PodCastFeed>> Serializer;
 
         public FeedManager()
         {
-            PodCastFeedList = new PodCastFeedList<PodCastFeed>();
-
-            sw = new Stopwatch();
-            DateTime dt = new DateTime();
             t = new Timer();
-            t.Interval = 30000;
-            t.Elapsed += new ElapsedEventHandler(RefreshPod);
+            t.Interval = 300000;
+            t.Elapsed += new ElapsedEventHandler(CheckPodUpdates);
             t.Start();
+
+            Deserialize();
+
         }
 
         public void Serialize()
         {
-            var fileName = "podurls.json";
-            var serializer = new JsonSerializer();
-            using (var writer = new StreamWriter(fileName))
-            using (var jsonWriter = new JsonTextWriter(writer))
+            if(PodCastFeedList != null)
             {
-                var urls = PodCastFeedList.GetURLs();
-                serializer.Serialize(jsonWriter, urls);
+                Serializer.Serialize(PodCastFeedList);
+            }
+        }
+
+        public async void Deserialize()
+        {
+            var jsonFile = "jsonData.json";
+            Serializer = new Serializer<PodCastFeedList<PodCastFeed>>(jsonFile);
+            if (File.Exists(jsonFile))
+            {
+                PodCastFeedList = Serializer.Deserialize();
+                foreach (var p in PodCastFeedList)
+                {
+                    await UpdateEpisodeList(p);
+                }
+            }
+            else
+            {
+                PodCastFeedList = new PodCastFeedList<PodCastFeed>();
             }
         }
 
@@ -57,7 +70,7 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
                 //Läs in RSS-flöde, skapa podcast-objekt och lägg till i listan
                 await ReadRSSAsync(url).ContinueWith((feed) => {
                     
-                    var pod = PodCastFeed.FromSyndicationFeed(feed.Result);
+                    var pod = PodCastFeed.FromSyndicationFeed(feed.Result, url);
                     pod.Category = category;
                     pod.UpdateInterval = updateInterval;
                     PodCastFeedList.Add(pod);
@@ -70,28 +83,25 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
                 });
         }
 
-        //Lägger till det senaste avsnittet i listan
-        public async void RefreshPod(object source, ElapsedEventArgs eArgs)
+        private async Task UpdateEpisodeList(PodCastFeed feed)
         {
-            ElapsedMinutes +=5;
+            var updatedFeed = await ReadRSSAsync(feed.Url);
+            feed.Episodes = PodCastEpisodeList<PodCastEpisode>.FromSyndicationItems(updatedFeed.Items);
 
-            var needsUpdate = PodCastFeedList.Where((p) => (ElapsedMinutes % p.UpdateInterval == 0)).ToList();
-
-            foreach(PodCastFeed p in needsUpdate)
-            {
-                var updatedFeed = await ReadRSSAsync(p.Url);
-
-                p.Episodes.Clear();
-                p.Episodes = PodCastEpisodeList<PodCastEpisode>.FromSyndicationItems(updatedFeed.Items);
-                
-                //var freshPod = PodCastFeed.FromSyndicationFeed(updatedFeed);
-                //PodCastFeedList.Remove(p);
-                //PodCastFeedList.Add(freshPod);
-            }
-
-            if(OnPodAdded != null)
+            if (OnPodAdded != null)
             {
                 FirePodAdded();
+            }
+        }
+
+        //Lägger till det senaste avsnittet i listan
+        public async void CheckPodUpdates(object source, ElapsedEventArgs eArgs)
+        {
+            ElapsedMinutes +=5;
+            var needsUpdate = PodCastFeedList.Where((p) => (ElapsedMinutes % p.UpdateInterval == 0)).ToList();
+            foreach(PodCastFeed p in needsUpdate)
+            {
+                await UpdateEpisodeList(p);
             }
         }
 

@@ -17,16 +17,15 @@ namespace ProjektarbeteHT18
         public frmRSSReader()
         {
             fm = new FeedManager();
+            fm.OnPodAdded += UpdatePodList;
             CategoryList = new CategoryList();
-             
             InitializeComponent();
-
 
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            fm.OnPodAdded += UpdatePodList;
+
         }
 
 
@@ -70,7 +69,7 @@ namespace ProjektarbeteHT18
                 lv_Podcast.Items.Clear();
                 foreach (PodCastFeed p in fm.PodCastFeedList)
                 {
-                    string numberOfEpisodes = p.Episodes.Count.ToString();
+                    string numberOfEpisodes = (p.Episodes != null) ? p.Episodes.Count.ToString() : "0";
                     ListViewItem lvItem = new ListViewItem(new[] { numberOfEpisodes, p.Name, p.UpdateInterval.ToString(), p.Category });
                     lv_Podcast.Items.Add(lvItem);
                 }

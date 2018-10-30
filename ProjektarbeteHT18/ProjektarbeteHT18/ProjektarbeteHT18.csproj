@@ -62,6 +62,7 @@
     <Compile Include="Business Logic Layer\PodCast\PodCastFeed.cs" />
     <Compile Include="Business Logic Layer\PodCast\PodCastFeedList.cs" />
     <Compile Include="Business Logic Layer\PodRefresher.cs" />
+    <Compile Include="Business Logic Layer\Serializer.cs" />
     <Compile Include="Presentation Layer\Form1.cs">
       <SubType>Form</SubType>
     </Compile>

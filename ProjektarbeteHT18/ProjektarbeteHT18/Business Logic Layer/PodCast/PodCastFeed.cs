@@ -6,16 +6,20 @@ using System.ServiceModel.Syndication;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Newtonsoft.Json;
 
 namespace ProjektarbeteHT18.Business_Logic_Layer
 {
     public class PodCastFeed : IPodCastFeed, IListable
     {
-        public static PodCastFeed FromSyndicationFeed(SyndicationFeed feed)
+        public static PodCastFeed FromSyndicationFeed(SyndicationFeed feed, string url)
         {
             var episodes = new PodCastEpisodeList<PodCastEpisode>();
-            string feedTitle = feed.Title.Text;
-            var feedURL = feed.Links.Single((p) => p.MediaType == "application/rss+xml").Uri.ToString();
+            var feedTitle = feed.Title.Text;
+            //Alla RSS-flöden lagrar inte URL i länksamlingen,
+            //vi lade till URL som parameter i metoden istället.
+            //var feedURL = feed.Links.SingleOrDefault((p) => p.MediaType == "application/rss+xml").Uri.ToString();
+            var feedURL = url;
             var lastUpdated = feed.LastUpdatedTime;
 
             foreach (SyndicationItem item in feed.Items)
@@ -49,7 +53,7 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
         public string Category { get; set; }
         public int UpdateInterval { get; set; }
         public DateTimeOffset LastUpdated { get; set; }
-        public PodCastEpisodeList<PodCastEpisode> Episodes { get; set; }
+        [JsonIgnore] public PodCastEpisodeList<PodCastEpisode> Episodes { get; set; }
 
     }
 }
