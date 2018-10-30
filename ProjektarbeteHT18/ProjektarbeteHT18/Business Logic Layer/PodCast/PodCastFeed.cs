@@ -43,10 +43,18 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
         {
             Url = url;
             Name = name;
-            Episodes = episodes;
+            if(episodes != null)
+            {
+                Episodes = episodes;
+            }
+            else
+            {
+                Episodes = new PodCastEpisodeList<PodCastEpisode>();
+            }
             Category = "";
             LastUpdated = lastUpdated;
         }
+
 
         public string Url { get; set; }
         public string Name { get; set; }

@@ -12,15 +12,14 @@ namespace ProjektarbeteHT18
     public partial class frmRSSReader : Form
     {
         FeedManager fm;
-        CategoryList CategoryList;
 
         public frmRSSReader()
         {
-            fm = new FeedManager();
-            fm.OnPodAdded += UpdatePodList;
-            CategoryList = new CategoryList();
             InitializeComponent();
-
+            //fm = new FeedManager();
+            fm = FeedManager.FromJsonOrDefault("jsonData.json");
+            fm.OnPodAdded += UpdatePodList;
+            UpdatePodList();
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -66,6 +65,7 @@ namespace ProjektarbeteHT18
             });
             } else
             {
+                UpdateCategory();
                 lv_Podcast.Items.Clear();
                 foreach (PodCastFeed p in fm.PodCastFeedList)
                 {
@@ -81,11 +81,11 @@ namespace ProjektarbeteHT18
             lv_Categories.Items.Clear();
             cb_Kategori.Items.Clear();
             cb_Kategori.ResetText();
-            foreach (string c in CategoryList)
+            foreach (string c in fm.CategoryList)
             {
 
                 ListViewItem lvItem = new ListViewItem(new[] { c });
-
+                
                 lv_Categories.Items.Add(lvItem);
                 cb_Kategori.Items.Add(c);
             }
@@ -114,7 +114,9 @@ namespace ProjektarbeteHT18
             {
                 var selectedIndex = lv_Podcast.FocusedItem.Index;
                 var feed = fm.PodCastFeedList[selectedIndex];
-                txt_Url.Text = feed.Url;               
+                txt_Url.Text = feed.Url;
+                cb_Kategori.Text = lv_Podcast.Items[selectedIndex].SubItems[3].Text;
+                cb_frekvens.Text = lv_Podcast.Items[selectedIndex].SubItems[2].Text;
                 UpdateEpisodeList(feed);
             }
 
@@ -122,10 +124,9 @@ namespace ProjektarbeteHT18
 
         private void lv_PodcastAvsnitt_SelectedIndexChanged(object sender, EventArgs e)
         {
-            var selectedPodIndex = lv_Podcast.SelectedIndices[0];
-
-            if(lvPodCastEpisodes.FocusedItem != null)
+            if(lvPodCastEpisodes.FocusedItem != null && lv_Podcast.FocusedItem != null)
             {
+                var selectedPodIndex = lv_Podcast.FocusedItem.Index;
                 var selectedEpisodeIndex = lvPodCastEpisodes.FocusedItem.Index;
                 var episode = (PodCastEpisode)fm.PodCastFeedList[selectedPodIndex].Episodes[selectedEpisodeIndex];
                 UpdateEpisodeDetails(episode);
@@ -134,7 +135,7 @@ namespace ProjektarbeteHT18
 
         private void btn_NyKategori_Click(object sender, EventArgs e)
         {
-            CategoryList.AddCategory(txt_Category.Text);
+            fm.CategoryList.AddCategory(txt_Category.Text);
             UpdateCategory();
             txt_Category.Clear();
         }
@@ -142,7 +143,7 @@ namespace ProjektarbeteHT18
         private void btn_SparaKategori_Click(object sender, EventArgs e)
         {
             string selected = lv_Categories.FocusedItem.Text;
-            CategoryList.ReNameCategory(selected, txt_Category.Text);
+            fm.CategoryList.ReNameCategory(selected, txt_Category.Text);
 
             UpdateCategory();
             txt_Category.Clear();
@@ -159,14 +160,23 @@ namespace ProjektarbeteHT18
 
         private void btn_TaBortKategori_Click(object sender, EventArgs e)
         {
-            string selected = lv_Categories.FocusedItem.Text;
-            CategoryList.RemoveCategory(selected);
-            UpdateCategory();
+            if(lv_Categories.FocusedItem != null)
+            {
+                string selected = lv_Categories.FocusedItem.Text;
+                fm.RemoveCategory(selected);
+                UpdateCategory();
+            }
+
         }
 
         private void frmRSSReader_FormClosing(object sender, FormClosingEventArgs e)
         {
             fm.Serialize();
+        }
+
+        private async void btn_TaBortPodcast_Click(object sender, EventArgs e)
+        {
+            await fm.RemovePod(txt_Url.Text);
         }
     }
 }

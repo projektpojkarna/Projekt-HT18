@@ -21,9 +21,9 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
 
         }
 
-        public List<string> PrepareSerialization()
+        public void RemovePodByUrl(string url)
         {
-            return this.Select((p) => p.Url).ToList();
+            Remove(this.Single((p) => p.Url == url));
         }
 
         public void AddFeed(string url)

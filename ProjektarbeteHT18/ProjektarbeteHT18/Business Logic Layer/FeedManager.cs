@@ -16,6 +16,7 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
     class FeedManager
     {
         public PodCastFeedList<PodCastFeed> PodCastFeedList { get; set; }
+        public CategoryList CategoryList { get; set; }
 
         public delegate void PodCastAddedHandler();
         public event PodCastAddedHandler OnPodAdded;
@@ -23,43 +24,48 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
         private Timer t;
         int ElapsedMinutes;
 
-        Serializer<PodCastFeedList<PodCastFeed>> Serializer;
+        EpisodeUpdater EpisodeUpdater;
 
-        public FeedManager()
+        Serializer<FeedManager> Serializer;
+
+        public static FeedManager FromJsonOrDefault(string jsonFile)
         {
+            var serializer = new Serializer<FeedManager>(jsonFile);
+
+            if (File.Exists(jsonFile))
+            {
+                var fm = serializer.Deserialize();
+                foreach(var p in fm.PodCastFeedList)
+                {
+                    fm.UpdateEpisodeList(p);
+                }
+                return fm;
+            }
+            else
+            {
+                return new FeedManager();
+            }
+        }
+
+        private FeedManager()
+        {
+            CategoryList = new CategoryList();
+            PodCastFeedList = new PodCastFeedList<PodCastFeed>();
+
+            EpisodeUpdater = new EpisodeUpdater(new ElapsedEventHandler(CheckPodUpdates));
+
             t = new Timer();
             t.Interval = 300000;
             t.Elapsed += new ElapsedEventHandler(CheckPodUpdates);
             t.Start();
 
-            Deserialize();
+            Serializer = new Serializer<FeedManager>("jsonData.json");
 
         }
 
         public void Serialize()
         {
-            if(PodCastFeedList != null)
-            {
-                Serializer.Serialize(PodCastFeedList);
-            }
-        }
-
-        public async void Deserialize()
-        {
-            var jsonFile = "jsonData.json";
-            Serializer = new Serializer<PodCastFeedList<PodCastFeed>>(jsonFile);
-            if (File.Exists(jsonFile))
-            {
-                PodCastFeedList = Serializer.Deserialize();
-                foreach (var p in PodCastFeedList)
-                {
-                    await UpdateEpisodeList(p);
-                }
-            }
-            else
-            {
-                PodCastFeedList = new PodCastFeedList<PodCastFeed>();
-            }
+            Serializer.Serialize(this);
         }
 
         //Lägger till en ny podcast
@@ -75,23 +81,18 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
                     pod.UpdateInterval = updateInterval;
                     PodCastFeedList.Add(pod);
 
-                    //Avfyra event
-                    if (OnPodAdded != null)
-                    {
-                        FirePodAdded();
-                    }
+                    FirePodAdded();
                 });
         }
 
-        private async Task UpdateEpisodeList(PodCastFeed feed)
+        public async Task RemovePod(string url)
         {
-            var updatedFeed = await ReadRSSAsync(feed.Url);
-            feed.Episodes = PodCastEpisodeList<PodCastEpisode>.FromSyndicationItems(updatedFeed.Items);
-
-            if (OnPodAdded != null)
+            await Task.Run(() =>
             {
+                PodCastFeedList.RemovePodByUrl(url);
+                //Avfyra event för uppdatering av listan3
                 FirePodAdded();
-            }
+            });
         }
 
         //Lägger till det senaste avsnittet i listan
@@ -103,6 +104,13 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
             {
                 await UpdateEpisodeList(p);
             }
+        }
+
+        private async Task UpdateEpisodeList(PodCastFeed feed)
+        {
+            var updatedFeed = await ReadRSSAsync(feed.Url);
+            feed.Episodes = PodCastEpisodeList<PodCastEpisode>.FromSyndicationItems(updatedFeed.Items);
+            FirePodAdded();
         }
 
         private async Task<SyndicationFeed> ReadRSSAsync(string url)
@@ -118,6 +126,16 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
                 }
             });
             return syndicationFeed;
+        }
+
+        public void RemoveCategory(string category)
+        {
+            bool isUsed = PodCastFeedList.Any((p) => p.Category == category );
+            if(isUsed)
+            {
+                throw new Exception();
+            }
+            CategoryList.Remove(category);
         }
 
         //Metod för att hantera händelseanrop
