@@ -58,8 +58,9 @@
     <Compile Include="Business Logic Layer\Interface\IPodCastFeed.cs" />
     <Compile Include="Business Logic Layer\PodCast\PodCastEpisode.cs" />
     <Compile Include="Business Logic Layer\PodCast\PodCastEpisodeList.cs" />
-    <Compile Include="Business Logic Layer\PodCast\PodCastFeed.cs" />
-    <Compile Include="Business Logic Layer\PodCast\PodCastFeedList.cs" />
+    <Compile Include="Business Logic Layer\PodCast\PodCast.cs" />
+    <Compile Include="Business Logic Layer\PodCast\PodCastList.cs" />
+    <Compile Include="Business Logic Layer\RSSReader.cs" />
     <Compile Include="Data Access Layer\Serializer.cs" />
     <Compile Include="Presentation Layer\Form1.cs">
       <SubType>Form</SubType>

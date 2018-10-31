@@ -11,14 +11,16 @@ namespace ProjektarbeteHT18
 {
     public partial class frmRSSReader : Form
     {
-        FeedManager fm;
+        FeedManager Fm;
+        string Filter;
 
         public frmRSSReader()
         {
             InitializeComponent();
-            //fm = new FeedManager();
-            fm = FeedManager.FromJsonOrDefault("jsonData.json");
-            fm.OnPodAdded += UpdatePodList;
+            Fm = FeedManager.FromJsonOrDefault("jsonData.json");
+            Fm.OnPodUpdate += UpdatePodList;
+            Filter = "";
+
             UpdatePodList();
         }
 
@@ -36,7 +38,7 @@ namespace ProjektarbeteHT18
         
 
         //Uppdaterar listan med podcastavsnitt
-        private void UpdateEpisodeList(PodCastFeed feed)
+        private void UpdateEpisodeList(PodCast feed)
         {
             PodCastEpisodeList<PodCastEpisode> epList = feed.Episodes;
 
@@ -53,13 +55,17 @@ namespace ProjektarbeteHT18
                 lv_Podcast.Invoke((MethodInvoker)delegate
                 {
                     lv_Podcast.Items.Clear();
-                    foreach (PodCastFeed p in fm.PodCastFeedList)
+                    foreach (PodCast p in Fm.PodCastFeedList)
                     {
-                        string numberOfEpisodes = p.Episodes.Count.ToString();
-                        ListViewItem lvItem = new ListViewItem(new[] {
+                        if(p.Category.StartsWith(Filter, StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            string numberOfEpisodes = p.Episodes.Count.ToString();
+                            ListViewItem lvItem = new ListViewItem(new[] {
                             numberOfEpisodes, p.Name, p.UpdateInterval.ToString(), p.Category
                         });
-                        lv_Podcast.Items.Add(lvItem);
+                            lv_Podcast.Items.Add(lvItem);
+                        }
+
                     }
 
             });
@@ -67,11 +73,15 @@ namespace ProjektarbeteHT18
             {
                 UpdateCategory();
                 lv_Podcast.Items.Clear();
-                foreach (PodCastFeed p in fm.PodCastFeedList)
+                foreach (PodCast p in Fm.PodCastFeedList)
                 {
-                    string numberOfEpisodes = (p.Episodes != null) ? p.Episodes.Count.ToString() : "0";
-                    ListViewItem lvItem = new ListViewItem(new[] { numberOfEpisodes, p.Name, p.UpdateInterval.ToString(), p.Category });
-                    lv_Podcast.Items.Add(lvItem);
+                    if(p.Category.StartsWith(Filter, StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        string numberOfEpisodes = (p.Episodes != null) ? p.Episodes.Count.ToString() : "0";
+                        ListViewItem lvItem = new ListViewItem(new[] { numberOfEpisodes, p.Name, p.UpdateInterval.ToString(), p.Category });
+                        lv_Podcast.Items.Add(lvItem);
+                    }
+
                 }
             }
         }
@@ -81,11 +91,9 @@ namespace ProjektarbeteHT18
             lv_Categories.Items.Clear();
             cb_Kategori.Items.Clear();
             cb_Kategori.ResetText();
-            foreach (string c in fm.CategoryList)
+            foreach (string c in Fm.CategoryList)
             {
-
-                ListViewItem lvItem = new ListViewItem(new[] { c });
-                
+                ListViewItem lvItem = new ListViewItem(new[] { c });   
                 lv_Categories.Items.Add(lvItem);
                 cb_Kategori.Items.Add(c);
             }
@@ -103,7 +111,7 @@ namespace ProjektarbeteHT18
             var url = txt_Url.Text;
             var category = cb_Kategori.SelectedItem.ToString();
             int.TryParse(cb_frekvens.SelectedItem.ToString(), out int interval);
-            await fm.AddNewPod(url, category, interval);
+            await Fm.AddNewPod(url, category, interval);
         }
 
         private void lv_Podcast_SelectedIndexChanged(object sender, EventArgs e)
@@ -113,7 +121,7 @@ namespace ProjektarbeteHT18
             if(lv_Podcast.FocusedItem != null)
             {
                 var selectedIndex = lv_Podcast.FocusedItem.Index;
-                var feed = fm.PodCastFeedList[selectedIndex];
+                var feed = Fm.PodCastFeedList[selectedIndex];
                 txt_Url.Text = feed.Url;
                 cb_Kategori.Text = lv_Podcast.Items[selectedIndex].SubItems[3].Text;
                 cb_frekvens.Text = lv_Podcast.Items[selectedIndex].SubItems[2].Text;
@@ -128,14 +136,14 @@ namespace ProjektarbeteHT18
             {
                 var selectedPodIndex = lv_Podcast.FocusedItem.Index;
                 var selectedEpisodeIndex = lvPodCastEpisodes.FocusedItem.Index;
-                var episode = (PodCastEpisode)fm.PodCastFeedList[selectedPodIndex].Episodes[selectedEpisodeIndex];
+                var episode = (PodCastEpisode)Fm.PodCastFeedList[selectedPodIndex].Episodes[selectedEpisodeIndex];
                 UpdateEpisodeDetails(episode);
             }
         }
 
         private void btn_NyKategori_Click(object sender, EventArgs e)
         {
-            fm.CategoryList.AddCategory(txt_Category.Text);
+            Fm.CategoryList.AddCategory(txt_Category.Text);
             UpdateCategory();
             txt_Category.Clear();
         }
@@ -143,7 +151,7 @@ namespace ProjektarbeteHT18
         private void btn_SparaKategori_Click(object sender, EventArgs e)
         {
             string selected = lv_Categories.FocusedItem.Text;
-            fm.CategoryList.ReNameCategory(selected, txt_Category.Text);
+            Fm.CategoryList.ReNameCategory(selected, txt_Category.Text);
 
             UpdateCategory();
             txt_Category.Clear();
@@ -163,7 +171,7 @@ namespace ProjektarbeteHT18
             if(lv_Categories.FocusedItem != null)
             {
                 string selected = lv_Categories.FocusedItem.Text;
-                fm.RemoveCategory(selected);
+                Fm.RemoveCategory(selected);
                 UpdateCategory();
             }
 
@@ -171,12 +179,37 @@ namespace ProjektarbeteHT18
 
         private void frmRSSReader_FormClosing(object sender, FormClosingEventArgs e)
         {
-            fm.Serialize();
+            Fm.Serialize();
         }
 
         private async void btn_TaBortPodcast_Click(object sender, EventArgs e)
         {
-            await fm.RemovePod(txt_Url.Text);
+            await Fm.RemovePod(txt_Url.Text);
+        }
+
+        private async void btn_SparaPodcast_Click(object sender, EventArgs e)
+        {
+            if(lv_Podcast.FocusedItem != null)
+            {
+                var selectedPodIndex = lv_Podcast.FocusedItem.Index;
+                var newUrl = txt_Url.Text;
+                int.TryParse(cb_frekvens.SelectedItem.ToString(), out int newInterval);
+                var newCategory = cb_Kategori.SelectedItem.ToString();
+                await Fm.UpdatePodCast(selectedPodIndex, newUrl, newInterval, newCategory);
+            }
+          
+        }
+
+        private void btnSort_Click(object sender, EventArgs e)
+        {
+            Filter = txtSortCategory.Text;
+            UpdatePodList();
+        }
+
+        private void btnRemoveFilter_Click(object sender, EventArgs e)
+        {
+            Filter = "";
+            UpdatePodList();
         }
     }
 }

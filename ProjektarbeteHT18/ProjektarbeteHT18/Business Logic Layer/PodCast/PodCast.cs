@@ -10,9 +10,9 @@ using Newtonsoft.Json;
 
 namespace ProjektarbeteHT18.Business_Logic_Layer
 {
-    public class PodCastFeed : IPodCastFeed, IListable
+    public class PodCast : IPodCastFeed, IListable
     {
-        public static PodCastFeed FromSyndicationFeed(SyndicationFeed feed, string url)
+        public static PodCast FromSyndicationFeed(SyndicationFeed feed, string url)
         {
             var episodes = new PodCastEpisodeList<PodCastEpisode>();
             var feedTitle = feed.Title.Text;
@@ -26,7 +26,7 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
             {
                 episodes.Add(PodCastEpisode.FromSyndicationItem(item));
             }
-            return new PodCastFeed(feedURL, feedTitle, episodes, lastUpdated);
+            return new PodCast(feedURL, feedTitle, episodes, lastUpdated);
         }
 
         public ListViewItem ToListViewItem()
@@ -39,7 +39,7 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
             return new ListViewItem(dataToDisplay.ToArray());
         }
 
-        public PodCastFeed(string url, String name, PodCastEpisodeList<PodCastEpisode> episodes, DateTimeOffset lastUpdated)
+        public PodCast(string url, String name, PodCastEpisodeList<PodCastEpisode> episodes, DateTimeOffset lastUpdated)
         {
             Url = url;
             Name = name;

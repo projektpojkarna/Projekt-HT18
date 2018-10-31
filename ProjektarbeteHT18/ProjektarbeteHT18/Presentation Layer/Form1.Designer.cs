@@ -58,6 +58,11 @@
             this.lb_Podcast = new System.Windows.Forms.Label();
             this.txtEpisodeDescription = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
+            this.btnFilter = new System.Windows.Forms.Button();
+            this.txtSortCategory = new System.Windows.Forms.TextBox();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.btnRemoveFilter = new System.Windows.Forms.Button();
+            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // lv_Podcast
@@ -175,7 +180,7 @@
             this.txt_Url.Location = new System.Drawing.Point(12, 222);
             this.txt_Url.Multiline = true;
             this.txt_Url.Name = "txt_Url";
-            this.txt_Url.Size = new System.Drawing.Size(290, 24);
+            this.txt_Url.Size = new System.Drawing.Size(318, 24);
             this.txt_Url.TabIndex = 7;
             // 
             // cb_frekvens
@@ -185,7 +190,7 @@
             "5",
             "10",
             "15"});
-            this.cb_frekvens.Location = new System.Drawing.Point(319, 222);
+            this.cb_frekvens.Location = new System.Drawing.Point(217, 328);
             this.cb_frekvens.Name = "cb_frekvens";
             this.cb_frekvens.Size = new System.Drawing.Size(52, 24);
             this.cb_frekvens.TabIndex = 8;
@@ -194,7 +199,7 @@
             // cb_Kategori
             // 
             this.cb_Kategori.FormattingEnabled = true;
-            this.cb_Kategori.Location = new System.Drawing.Point(503, 219);
+            this.cb_Kategori.Location = new System.Drawing.Point(17, 325);
             this.cb_Kategori.MaxDropDownItems = 50;
             this.cb_Kategori.Name = "cb_Kategori";
             this.cb_Kategori.Size = new System.Drawing.Size(183, 24);
@@ -215,7 +220,7 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.4F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(316, 199);
+            this.label2.Location = new System.Drawing.Point(214, 305);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(127, 17);
             this.label2.TabIndex = 11;
@@ -225,7 +230,7 @@
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.4F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(508, 199);
+            this.label3.Location = new System.Drawing.Point(14, 305);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(69, 17);
             this.label3.TabIndex = 12;
@@ -234,7 +239,7 @@
             // btn_TaBortPodcast
             // 
             this.btn_TaBortPodcast.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_TaBortPodcast.Location = new System.Drawing.Point(427, 252);
+            this.btn_TaBortPodcast.Location = new System.Drawing.Point(228, 252);
             this.btn_TaBortPodcast.Name = "btn_TaBortPodcast";
             this.btn_TaBortPodcast.Size = new System.Drawing.Size(102, 35);
             this.btn_TaBortPodcast.TabIndex = 13;
@@ -245,12 +250,13 @@
             // btn_SparaPodcast
             // 
             this.btn_SparaPodcast.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_SparaPodcast.Location = new System.Drawing.Point(319, 252);
+            this.btn_SparaPodcast.Location = new System.Drawing.Point(120, 252);
             this.btn_SparaPodcast.Name = "btn_SparaPodcast";
             this.btn_SparaPodcast.Size = new System.Drawing.Size(102, 35);
             this.btn_SparaPodcast.TabIndex = 14;
             this.btn_SparaPodcast.Text = "Spara";
             this.btn_SparaPodcast.UseVisualStyleBackColor = true;
+            this.btn_SparaPodcast.Click += new System.EventHandler(this.btn_SparaPodcast_Click);
             // 
             // lvPodCastEpisodes
             // 
@@ -258,7 +264,7 @@
             this.columnHeader5,
             this.columnHeader7});
             this.lvPodCastEpisodes.FullRowSelect = true;
-            this.lvPodCastEpisodes.Location = new System.Drawing.Point(16, 318);
+            this.lvPodCastEpisodes.Location = new System.Drawing.Point(13, 391);
             this.lvPodCastEpisodes.MultiSelect = false;
             this.lvPodCastEpisodes.Name = "lvPodCastEpisodes";
             this.lvPodCastEpisodes.Size = new System.Drawing.Size(670, 164);
@@ -320,7 +326,7 @@
             // 
             this.lb_Podcast.AutoSize = true;
             this.lb_Podcast.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lb_Podcast.Location = new System.Drawing.Point(17, 295);
+            this.lb_Podcast.Location = new System.Drawing.Point(14, 368);
             this.lb_Podcast.Name = "lb_Podcast";
             this.lb_Podcast.Size = new System.Drawing.Size(52, 17);
             this.lb_Podcast.TabIndex = 21;
@@ -340,17 +346,57 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(377, 225);
+            this.label7.Location = new System.Drawing.Point(275, 331);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(58, 17);
             this.label7.TabIndex = 23;
             this.label7.Text = ":e minut";
             // 
+            // btnFilter
+            // 
+            this.btnFilter.Location = new System.Drawing.Point(217, 21);
+            this.btnFilter.Name = "btnFilter";
+            this.btnFilter.Size = new System.Drawing.Size(75, 23);
+            this.btnFilter.TabIndex = 26;
+            this.btnFilter.Text = "Sortera";
+            this.btnFilter.UseVisualStyleBackColor = true;
+            this.btnFilter.Click += new System.EventHandler(this.btnSort_Click);
+            // 
+            // txtSortCategory
+            // 
+            this.txtSortCategory.Location = new System.Drawing.Point(6, 24);
+            this.txtSortCategory.Name = "txtSortCategory";
+            this.txtSortCategory.Size = new System.Drawing.Size(205, 22);
+            this.txtSortCategory.TabIndex = 27;
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.btnRemoveFilter);
+            this.groupBox1.Controls.Add(this.txtSortCategory);
+            this.groupBox1.Controls.Add(this.btnFilter);
+            this.groupBox1.Location = new System.Drawing.Point(385, 199);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(298, 88);
+            this.groupBox1.TabIndex = 28;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Sortera";
+            // 
+            // btnRemoveFilter
+            // 
+            this.btnRemoveFilter.Location = new System.Drawing.Point(186, 53);
+            this.btnRemoveFilter.Name = "btnRemoveFilter";
+            this.btnRemoveFilter.Size = new System.Drawing.Size(106, 23);
+            this.btnRemoveFilter.TabIndex = 28;
+            this.btnRemoveFilter.Text = "Ta bort filter";
+            this.btnRemoveFilter.UseVisualStyleBackColor = true;
+            this.btnRemoveFilter.Click += new System.EventHandler(this.btnRemoveFilter_Click);
+            // 
             // frmRSSReader
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1107, 494);
+            this.ClientSize = new System.Drawing.Size(1107, 575);
+            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.txtEpisodeDescription);
             this.Controls.Add(this.lb_Podcast);
@@ -378,6 +424,8 @@
             this.Text = "Lägg till en kategori först..";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmRSSReader_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -415,6 +463,10 @@
         private System.Windows.Forms.TextBox txtEpisodeDescription;
         private System.Windows.Forms.ColumnHeader columnHeader6;
         private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Button btnFilter;
+        private System.Windows.Forms.TextBox txtSortCategory;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.Button btnRemoveFilter;
     }
 }
 

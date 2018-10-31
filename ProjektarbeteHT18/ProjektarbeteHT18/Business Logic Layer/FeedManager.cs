@@ -15,16 +15,17 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
 {
     class FeedManager
     {
-        public PodCastFeedList<PodCastFeed> PodCastFeedList { get; set; }
+        public PodCastList<PodCast> PodCastFeedList { get; set; }
         public CategoryList CategoryList { get; set; }
 
         public delegate void PodCastAddedHandler();
-        public event PodCastAddedHandler OnPodAdded;
+        public event PodCastAddedHandler OnPodUpdate;
 
         private Timer t;
         int ElapsedMinutes;
 
-        EpisodeUpdater EpisodeUpdater;
+        //EpisodeUpdater EpisodeUpdater;
+        RSSReader FeedReader;
 
         Serializer<FeedManager> Serializer;
 
@@ -37,7 +38,7 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
                 var fm = serializer.Deserialize();
                 foreach(var p in fm.PodCastFeedList)
                 {
-                    fm.UpdateEpisodeList(p);
+                    fm.UpdatePodCast(p);
                 }
                 return fm;
             }
@@ -50,9 +51,11 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
         private FeedManager()
         {
             CategoryList = new CategoryList();
-            PodCastFeedList = new PodCastFeedList<PodCastFeed>();
+            PodCastFeedList = new PodCastList<PodCast>();
 
-            EpisodeUpdater = new EpisodeUpdater(new ElapsedEventHandler(CheckPodUpdates));
+            FeedReader = new RSSReader();
+
+            //EpisodeUpdater = new EpisodeUpdater(new ElapsedEventHandler(CheckPodUpdates));
 
             t = new Timer();
             t.Interval = 300000;
@@ -76,13 +79,20 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
                 //Läs in RSS-flöde, skapa podcast-objekt och lägg till i listan
                 await ReadRSSAsync(url).ContinueWith((feed) => {
                     
-                    var pod = PodCastFeed.FromSyndicationFeed(feed.Result, url);
+                    var pod = PodCast.FromSyndicationFeed(feed.Result, url);
                     pod.Category = category;
                     pod.UpdateInterval = updateInterval;
                     PodCastFeedList.Add(pod);
 
-                    FirePodAdded();
+                    FirePodUpdated();
                 });
+        }
+
+        private async Task AddNewPod(PodCast feed)
+        {
+            await Task.Run(() => {
+                PodCastFeedList.Add(feed);
+            });
         }
 
         public async Task RemovePod(string url)
@@ -91,26 +101,40 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
             {
                 PodCastFeedList.RemovePodByUrl(url);
                 //Avfyra event för uppdatering av listan3
-                FirePodAdded();
+                FirePodUpdated();
             });
         }
+
 
         //Lägger till det senaste avsnittet i listan
         public async void CheckPodUpdates(object source, ElapsedEventArgs eArgs)
         {
             ElapsedMinutes +=5;
             var needsUpdate = PodCastFeedList.Where((p) => (ElapsedMinutes % p.UpdateInterval == 0)).ToList();
-            foreach(PodCastFeed p in needsUpdate)
+            foreach(PodCast p in needsUpdate)
             {
-                await UpdateEpisodeList(p);
+                await UpdatePodCast(p);
             }
         }
 
-        private async Task UpdateEpisodeList(PodCastFeed feed)
+        private async Task UpdatePodCast(PodCast pod)
         {
-            var updatedFeed = await ReadRSSAsync(feed.Url);
-            feed.Episodes = PodCastEpisodeList<PodCastEpisode>.FromSyndicationItems(updatedFeed.Items);
-            FirePodAdded();
+            var updatedFeed = await ReadRSSAsync(pod.Url);
+            pod.Name = updatedFeed.Title.Text;
+            pod.Episodes = PodCastEpisodeList<PodCastEpisode>.FromSyndicationItems(updatedFeed.Items);
+            FirePodUpdated();
+        }
+
+        public async Task UpdatePodCast(int index, string newUrl, int newInterval, string newCategory)
+        {
+            var pod = PodCastFeedList[index];
+            pod.UpdateInterval = newInterval;
+            pod.Category = newCategory;
+            if (newUrl != pod.Url)
+            {
+                pod.Url = newUrl;
+                await UpdatePodCast(pod);
+            }
         }
 
         private async Task<SyndicationFeed> ReadRSSAsync(string url)
@@ -122,7 +146,6 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
                     var f = SyndicationFeed.Load(reader);
                     reader.Close();
                     return f;
-                  
                 }
             });
             return syndicationFeed;
@@ -139,11 +162,11 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
         }
 
         //Metod för att hantera händelseanrop
-        private void FirePodAdded()
+        private void FirePodUpdated()
         {
-            if (OnPodAdded != null)
+            if (OnPodUpdate != null)
             {
-                OnPodAdded();
+                OnPodUpdate();
             }
         }
     }
