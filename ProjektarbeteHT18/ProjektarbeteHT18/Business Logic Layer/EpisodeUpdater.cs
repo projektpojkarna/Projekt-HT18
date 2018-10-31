@@ -15,21 +15,10 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
         public EpisodeUpdater(ElapsedEventHandler Updater)
         {
             t = new Timer();
-            t.Interval = 300000;
-            t.Elapsed += new ElapsedEventHandler(CheckPodUpdates);
+            t.Interval = 300000; //Avfyrar ElapsedEventHandler var 5:e minut
+            t.Elapsed += new ElapsedEventHandler(Updater);
             ElapsedMintues = 0;
             t.Start();
-        }
-
-        //Lägger till det senaste avsnittet i listan
-        public async void CheckPodUpdates(object source, ElapsedEventArgs eArgs)
-        {
-            ElapsedMinutes += 5;
-            var needsUpdate = PodCastFeedList.Where((p) => (ElapsedMinutes % p.UpdateInterval == 0)).ToList();
-            foreach (PodCastFeed p in needsUpdate)
-            {
-                await UpdateEpisodeList(p);
-            }
         }
     }
 }
