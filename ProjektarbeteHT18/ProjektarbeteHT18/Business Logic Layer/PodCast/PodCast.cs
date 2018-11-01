@@ -12,6 +12,13 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
 {
     public class PodCast : IPodCastFeed, IListable
     {
+        public string Url { get; set; }
+        public string Name { get; set; }
+        public string Category { get; set; }
+        public int UpdateInterval { get; set; }
+        public DateTimeOffset LastUpdated { get; set; }
+        [JsonIgnore] public PodCastEpisodeList<PodCastEpisode> Episodes { get; set; }
+
         public static PodCast FromSyndicationFeed(SyndicationFeed feed, string url)
         {
             var episodes = new PodCastEpisodeList<PodCastEpisode>();
@@ -27,16 +34,6 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
                 episodes.Add(PodCastEpisode.FromSyndicationItem(item));
             }
             return new PodCast(feedURL, feedTitle, episodes, lastUpdated);
-        }
-
-        public ListViewItem ToListViewItem()
-        {
-            var dataToDisplay = new List<string> {
-                Episodes.Count.ToString(),
-                Name,
-                UpdateInterval.ToString(),
-                Category };
-            return new ListViewItem(dataToDisplay.ToArray());
         }
 
         [JsonConstructor]private PodCast(string url, String name, PodCastEpisodeList<PodCastEpisode> episodes, DateTimeOffset lastUpdated)
@@ -55,13 +52,14 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
             LastUpdated = lastUpdated;
         }
 
-
-        public string Url { get; set; }
-        public string Name { get; set; }
-        public string Category { get; set; }
-        public int UpdateInterval { get; set; }
-        public DateTimeOffset LastUpdated { get; set; }
-        [JsonIgnore] public PodCastEpisodeList<PodCastEpisode> Episodes { get; set; }
-
+        public ListViewItem ToListViewItem()
+        {
+            var dataToDisplay = new List<string> {
+                Episodes.Count.ToString(),
+                Name,
+                UpdateInterval.ToString(),
+                Category };
+            return new ListViewItem(dataToDisplay.ToArray());
+        }
     }
 }

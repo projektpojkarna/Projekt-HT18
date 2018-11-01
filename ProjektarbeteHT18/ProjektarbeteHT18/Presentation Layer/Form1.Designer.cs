@@ -396,9 +396,11 @@
             // lblErrorMsg
             // 
             this.lblErrorMsg.AutoSize = true;
-            this.lblErrorMsg.Location = new System.Drawing.Point(385, 305);
+            this.lblErrorMsg.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblErrorMsg.ForeColor = System.Drawing.Color.Red;
+            this.lblErrorMsg.Location = new System.Drawing.Point(386, 297);
             this.lblErrorMsg.Name = "lblErrorMsg";
-            this.lblErrorMsg.Size = new System.Drawing.Size(40, 17);
+            this.lblErrorMsg.Size = new System.Drawing.Size(54, 25);
             this.lblErrorMsg.TabIndex = 29;
             this.lblErrorMsg.Text = "Error";
             // 

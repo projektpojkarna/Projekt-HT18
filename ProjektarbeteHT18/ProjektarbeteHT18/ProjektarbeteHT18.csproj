@@ -50,7 +50,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Business Logic Layer\EpisodeUpdater.cs" />
+    <Compile Include="Business Logic Layer\Categories\Category.cs" />
+    <Compile Include="Business Logic Layer\CatList.cs" />
+    <Compile Include="Business Logic Layer\CustomList.cs" />
+    <Compile Include="Business Logic Layer\Interface\ICategory.cs" />
+    <Compile Include="Business Logic Layer\PodCastList.cs" />
+    <Compile Include="Business Logic Layer\Timer.cs" />
     <Compile Include="Business Logic Layer\Exceptions\ExceptionHandler.cs" />
     <Compile Include="Business Logic Layer\FeedManager.cs" />
     <Compile Include="Business Logic Layer\CategoryList.cs" />
@@ -60,7 +65,7 @@
     <Compile Include="Business Logic Layer\PodCast\PodCastEpisode.cs" />
     <Compile Include="Business Logic Layer\PodCast\PodCastEpisodeList.cs" />
     <Compile Include="Business Logic Layer\PodCast\PodCast.cs" />
-    <Compile Include="Business Logic Layer\PodCast\PodCastList.cs" />
+    <Compile Include="Business Logic Layer\PodCast\PodList.cs" />
     <Compile Include="Business Logic Layer\RSSReader.cs" />
     <Compile Include="Business Logic Layer\Validator.cs" />
     <Compile Include="Data Access Layer\Serializer.cs" />

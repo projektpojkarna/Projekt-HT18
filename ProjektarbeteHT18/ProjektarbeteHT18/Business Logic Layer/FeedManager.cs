@@ -11,13 +11,14 @@ using System.Diagnostics;
 using Newtonsoft.Json;
 using System.IO;
 using ProjektarbeteHT18.Business_Logic_Layer.Exceptions;
+using ProjektarbeteHT18.Business_Logic_Layer.Categories;
 
 namespace ProjektarbeteHT18.Business_Logic_Layer
 {
     class FeedManager
     {
-        public PodCastList<PodCast> PodCastFeedList { get; set; }
-        public CategoryList CategoryList { get; set; }
+        public PodCastList<PodCast> PodCastList { get; set; }
+        public CatList<Category> CategoryList { get; set; }
 
         public delegate void PodCastAddedHandler();
         public event PodCastAddedHandler OnPodUpdate;
@@ -27,7 +28,7 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
 
         [JsonIgnore] public ExceptionHandler ExceptionHandler { get; set; }
 
-        private Timer t;
+        private System.Timers.Timer t;
         int ElapsedMinutes;
 
         Serializer<FeedManager> Serializer;
@@ -39,7 +40,7 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
             if (File.Exists(jsonFile))
             {
                 var fm = serializer.Deserialize();
-                foreach(var p in fm.PodCastFeedList)
+                foreach(var p in fm.PodCastList.GetAll())
                 {
                     fm.UpdatePodCast(p);
                 }
@@ -54,22 +55,36 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
 
         private FeedManager()
         {
-            CategoryList = new CategoryList();
-            PodCastFeedList = new PodCastList<PodCast>();
+            CategoryList = new CatList<Category>();
+            PodCastList = new PodCastList<PodCast>();
 
-            t = new Timer();
-            t.Interval = 300000;
-            t.Elapsed += new ElapsedEventHandler(CheckPodUpdates);
+            t = new System.Timers.Timer();
+            t.Interval = 30000;
+            t.Elapsed += new ElapsedEventHandler(RefreshPods);
             t.Start();
 
             Serializer = new Serializer<FeedManager>("jsonData.json");
             ExceptionHandler = new ExceptionHandler();
-
         }
 
         public void Serialize()
         {
             Serializer.Serialize(this);
+        }
+
+
+        //Tar bort en kategori; kollar först att kategorin inte används
+        public void RemoveCategory(string category)
+        {
+            bool isUsed = PodCastList.GetAll().Any((p) => p.Category == category);
+            if (isUsed)
+            {
+                OnError("Kategorin används av en eller flera podcasts.");
+            }
+            else
+            {
+                CategoryList.Remove(category);
+            }
         }
 
         //Lägger till en ny podcast
@@ -78,65 +93,39 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
             //TODO: Kolla först om poden finns!
 
            //Läs in RSS-flöde, skapa podcast-objekt och lägg till i listan
-            await ReadRSSAsync(url).ContinueWith((feed) => {
-                if(feed.Exception == null)
+            await ReadRSSAsync(url).ContinueWith((t) => {
+                if(t.Exception == null && t.Result != null)
                 {
-                    var pod = PodCast.FromSyndicationFeed(feed.Result, url);
+                    var feed = t.Result;
+                    var pod = PodCast.FromSyndicationFeed(feed, url);
                     pod.Category = category;
                     pod.UpdateInterval = updateInterval;
-                    PodCastFeedList.Add(pod);
+                    PodCastList.Add(pod);
 
                     FirePodUpdated();
                 }
             });    
         }
 
-        private async Task AddNewPod(PodCast feed)
-        {
-            await Task.Run(() => {
-                PodCastFeedList.Add(feed);
-            });
-        }
-
         public async Task RemovePod(string url)
         {
             await Task.Run(() =>
             {
-                PodCastFeedList.RemovePodByUrl(url);
-                //Avfyra event för uppdatering av listan
+                PodCastList.Remove(url);
                 FirePodUpdated();
             });
         }
 
-
-        //Lägger till det senaste avsnittet i listan
-        public async void CheckPodUpdates(object source, ElapsedEventArgs eArgs)
+        //Gör om metoden; ta bort poden och lägg till igen?
+        public async Task UpdateExistingPodCast(int index, string newUrl, int newInterval, string newCategory)
         {
-            ElapsedMinutes +=5;
-            var needsUpdate = PodCastFeedList.Where((p) => (ElapsedMinutes % p.UpdateInterval == 0)).ToList();
-            foreach(PodCast p in needsUpdate)
-            {
-                await UpdatePodCast(p);
-            }
-        }
-
-        private async Task UpdatePodCast(PodCast pod)
-        {
-            var updatedFeed = await ReadRSSAsync(pod.Url);
-            pod.Name = updatedFeed.Title.Text;
-            pod.Episodes = PodCastEpisodeList<PodCastEpisode>.FromSyndicationItems(updatedFeed.Items);
-            FirePodUpdated();
-        }
-
-        public async Task UpdatePodCast(int index, string newUrl, int newInterval, string newCategory)
-        {
-            var pod = PodCastFeedList[index];
+            var pod = PodCastList.Get(index);
             pod.UpdateInterval = newInterval;
             pod.Category = newCategory;
             if (newUrl != pod.Url)
             {
                 pod.Url = newUrl;
-                await UpdatePodCast(pod);
+                await CheckForPodUpdates(pod);
             }
             else
             {
@@ -144,9 +133,45 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
             }
         }
 
+        private async Task UpdatePodCast(PodCast pod)
+        {
+            var updatedFeed = await ReadRSSAsync(pod.Url);
+            UpdatePodCast(pod, updatedFeed);
+        }
+
+        //Uppdaterar en podcast
+        private void UpdatePodCast(PodCast pod, SyndicationFeed updatedFeed)
+        {
+            pod.Name = updatedFeed.Title.Text;
+            pod.LastUpdated = updatedFeed.LastUpdatedTime;
+            pod.Episodes = PodCastEpisodeList<PodCastEpisode>.FromSyndicationItems(updatedFeed.Items);
+            FirePodUpdated();
+        }
+
+        //Kollar om en podcast har den senaste uppdateringen
+        private async Task CheckForPodUpdates(PodCast pod)
+        {
+            var updatedFeed = await ReadRSSAsync(pod.Url);
+            if (pod.LastUpdated < updatedFeed.LastUpdatedTime)
+            {
+                UpdatePodCast(pod, updatedFeed);
+            }
+        }
+
+        //Anropas av timern; kollar vilka pods vars uppdateringsintervall stämmer överrens med timern
+        public async void RefreshPods(object source, ElapsedEventArgs eArgs)
+        {
+            ElapsedMinutes +=5;
+            var podsToUpdate = PodCastList.GetAll().Where((p) => (ElapsedMinutes % p.UpdateInterval == 0)).ToList();
+            foreach (PodCast p in podsToUpdate)
+            {
+                await CheckForPodUpdates(p);
+            }
+        }
+
         private async Task<SyndicationFeed> ReadRSSAsync(string url)
         {
-            var syndicationFeed = await Task.Run(() =>
+            var result = await Task.Run(() =>
             {
                 var settings = new XmlReaderSettings()
                 {
@@ -154,7 +179,7 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
                     DtdProcessing = DtdProcessing.Parse,
                     MaxCharactersFromEntities = 1024
                 };
-                var f = new SyndicationFeed();
+                SyndicationFeed f = null;
                 try
                 {
                     using (XmlReader reader = XmlReader.Create(url, settings))
@@ -169,20 +194,7 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
                 }
                 return f;
             });
-            return syndicationFeed;
-        }
-
-        public void RemoveCategory(string category)
-        {
-            bool isUsed = PodCastFeedList.Any((p) => p.Category == category );
-            if(isUsed)
-            {
-                OnError("Kategorin används av en eller flera podcasts.");
-            } else
-            {
-                CategoryList.Remove(category);
-            }
-           
+            return result;
         }
 
         //Metod för att hantera händelseanrop

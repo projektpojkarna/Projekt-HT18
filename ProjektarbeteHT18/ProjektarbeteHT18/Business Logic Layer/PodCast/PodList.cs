@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ProjektarbeteHT18.Business_Logic_Layer
 {
-    public class PodCastList<T> : List<T> where T : IPodCastFeed
+    public class PodList<T> : List<T> where T : IPodCastFeed
     {
         public IPodCastFeed GetPodByURL(string url)
         {
@@ -20,6 +20,7 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
             return null;
 
         }
+       
 
         public void RemovePodByUrl(string url)
         {
