@@ -48,7 +48,7 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
             return InnerList.Contains(obj);
         }
 
-        public ListViewItem[] ToListViewItems()
+        public virtual ListViewItem[] ToListViewItems()
         {
             var list = new List<ListViewItem>();
             foreach(T obj in InnerList)

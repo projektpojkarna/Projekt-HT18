@@ -9,9 +9,9 @@ using System.Windows.Forms;
 
 namespace ProjektarbeteHT18.Business_Logic_Layer
 {
-    public class CatList<T> : CustomList<Category>
+    public class CategoryList<T> : CustomList<Category>
     {
-        public CatList() : base() {}
+        public CategoryList() : base() {}
 
         public override bool Add(Category category)
         {

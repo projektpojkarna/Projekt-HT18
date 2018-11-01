@@ -8,6 +8,6 @@ namespace ProjektarbeteHT18.Business_Logic_Layer.Interface
 {
     public interface ICategory
     {
-        
+        string CategoryName { get; set; }
     }
 }

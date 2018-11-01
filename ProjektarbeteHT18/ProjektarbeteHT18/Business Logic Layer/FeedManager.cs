@@ -18,7 +18,7 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
     class FeedManager
     {
         public PodCastList<PodCast> PodCastList { get; set; }
-        public CatList<Category> CategoryList { get; set; }
+        public CategoryList<Category> CategoryList { get; set; }
 
         public delegate void PodCastAddedHandler();
         public event PodCastAddedHandler OnPodUpdate;
@@ -55,7 +55,7 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
 
         private FeedManager()
         {
-            CategoryList = new CatList<Category>();
+            CategoryList = new CategoryList<Category>();
             PodCastList = new PodCastList<PodCast>();
 
             t = new System.Timers.Timer();

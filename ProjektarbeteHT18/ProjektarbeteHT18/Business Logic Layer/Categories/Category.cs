@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 namespace ProjektarbeteHT18.Business_Logic_Layer.Categories
 {
-    public class Category : IListable
+    public class Category : IListable, ICategory
     {
         public string CategoryName { get; set; }
 
