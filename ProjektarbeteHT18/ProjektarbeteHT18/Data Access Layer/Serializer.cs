@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 
 namespace ProjektarbeteHT18.Business_Logic_Layer
 {
-
     public class Serializer<T>
     {
         private string Path { get; set; }

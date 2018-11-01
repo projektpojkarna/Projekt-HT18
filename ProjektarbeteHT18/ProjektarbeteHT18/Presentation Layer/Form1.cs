@@ -6,12 +6,14 @@ using ProjektarbeteHT18.Business_Logic_Layer;
 using System.Threading.Tasks;
 using System.Drawing;
 using System.Collections.Generic;
+using ProjektarbeteHT18.Business_Logic_Layer.Exceptions;
 
 namespace ProjektarbeteHT18
 {
     public partial class frmRSSReader : Form
     {
         FeedManager Fm;
+
         string Filter;
 
         public frmRSSReader()
@@ -19,9 +21,29 @@ namespace ProjektarbeteHT18
             InitializeComponent();
             Fm = FeedManager.FromJsonOrDefault("jsonData.json");
             Fm.OnPodUpdate += UpdatePodList;
+            Fm.OnError += PrintError;
+
+            Fm.ExceptionHandler.OnException += PrintError;
+
             Filter = "";
 
+            cb_frekvens.SelectedIndex = 0;
+
             UpdatePodList();
+        }
+
+        private void PrintError(string msg)
+        {
+            if(lblErrorMsg.InvokeRequired)
+            {
+                lblErrorMsg.Invoke((MethodInvoker)delegate
+                {
+                    lblErrorMsg.Text = msg;
+                });
+            } else
+            {
+                lblErrorMsg.Text = msg;
+            }
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -112,6 +134,7 @@ namespace ProjektarbeteHT18
             var category = cb_Kategori.SelectedItem.ToString();
             int.TryParse(cb_frekvens.SelectedItem.ToString(), out int interval);
             await Fm.AddNewPod(url, category, interval);
+
         }
 
         private void lv_Podcast_SelectedIndexChanged(object sender, EventArgs e)

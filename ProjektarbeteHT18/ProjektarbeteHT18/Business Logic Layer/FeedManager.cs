@@ -10,6 +10,7 @@ using System.Timers;
 using System.Diagnostics;
 using Newtonsoft.Json;
 using System.IO;
+using ProjektarbeteHT18.Business_Logic_Layer.Exceptions;
 
 namespace ProjektarbeteHT18.Business_Logic_Layer
 {
@@ -21,11 +22,13 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
         public delegate void PodCastAddedHandler();
         public event PodCastAddedHandler OnPodUpdate;
 
+        public delegate void ErrorHandler(string msg);
+        public event ErrorHandler OnError;
+
+        [JsonIgnore] public ExceptionHandler ExceptionHandler { get; set; }
+
         private Timer t;
         int ElapsedMinutes;
-
-        //EpisodeUpdater EpisodeUpdater;
-        RSSReader FeedReader;
 
         Serializer<FeedManager> Serializer;
 
@@ -48,14 +51,11 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
             }
         }
 
+
         private FeedManager()
         {
             CategoryList = new CategoryList();
             PodCastFeedList = new PodCastList<PodCast>();
-
-            FeedReader = new RSSReader();
-
-            //EpisodeUpdater = new EpisodeUpdater(new ElapsedEventHandler(CheckPodUpdates));
 
             t = new Timer();
             t.Interval = 300000;
@@ -63,6 +63,7 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
             t.Start();
 
             Serializer = new Serializer<FeedManager>("jsonData.json");
+            ExceptionHandler = new ExceptionHandler();
 
         }
 
@@ -76,16 +77,18 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
         {
             //TODO: Kolla först om poden finns!
 
-                //Läs in RSS-flöde, skapa podcast-objekt och lägg till i listan
-                await ReadRSSAsync(url).ContinueWith((feed) => {
-                    
+           //Läs in RSS-flöde, skapa podcast-objekt och lägg till i listan
+            await ReadRSSAsync(url).ContinueWith((feed) => {
+                if(feed.Exception == null)
+                {
                     var pod = PodCast.FromSyndicationFeed(feed.Result, url);
                     pod.Category = category;
                     pod.UpdateInterval = updateInterval;
                     PodCastFeedList.Add(pod);
 
                     FirePodUpdated();
-                });
+                }
+            });    
         }
 
         private async Task AddNewPod(PodCast feed)
@@ -100,7 +103,7 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
             await Task.Run(() =>
             {
                 PodCastFeedList.RemovePodByUrl(url);
-                //Avfyra event för uppdatering av listan3
+                //Avfyra event för uppdatering av listan
                 FirePodUpdated();
             });
         }
@@ -135,18 +138,36 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
                 pod.Url = newUrl;
                 await UpdatePodCast(pod);
             }
+            else
+            {
+                FirePodUpdated();
+            }
         }
 
         private async Task<SyndicationFeed> ReadRSSAsync(string url)
         {
-            var syndicationFeed = await Task.Run(() => {
-            var settings = new XmlReaderSettings() { Async = true, DtdProcessing = DtdProcessing.Parse, MaxCharactersFromEntities = 1024};
-            using (XmlReader reader = XmlReader.Create(url, settings))
+            var syndicationFeed = await Task.Run(() =>
+            {
+                var settings = new XmlReaderSettings()
                 {
-                    var f = SyndicationFeed.Load(reader);
-                    reader.Close();
-                    return f;
+                    Async = true,
+                    DtdProcessing = DtdProcessing.Parse,
+                    MaxCharactersFromEntities = 1024
+                };
+                var f = new SyndicationFeed();
+                try
+                {
+                    using (XmlReader reader = XmlReader.Create(url, settings))
+                    {
+                        f = SyndicationFeed.Load(reader);
+                        reader.Close();
+                    }
                 }
+                catch (Exception e)
+                {
+                    ExceptionHandler.HandleException(e);
+                }
+                return f;
             });
             return syndicationFeed;
         }
@@ -156,9 +177,12 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
             bool isUsed = PodCastFeedList.Any((p) => p.Category == category );
             if(isUsed)
             {
-                throw new Exception();
+                OnError("Kategorin används av en eller flera podcasts.");
+            } else
+            {
+                CategoryList.Remove(category);
             }
-            CategoryList.Remove(category);
+           
         }
 
         //Metod för att hantera händelseanrop

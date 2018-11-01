@@ -39,7 +39,7 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
             return new ListViewItem(dataToDisplay.ToArray());
         }
 
-        public PodCast(string url, String name, PodCastEpisodeList<PodCastEpisode> episodes, DateTimeOffset lastUpdated)
+        [JsonConstructor]private PodCast(string url, String name, PodCastEpisodeList<PodCastEpisode> episodes, DateTimeOffset lastUpdated)
         {
             Url = url;
             Name = name;

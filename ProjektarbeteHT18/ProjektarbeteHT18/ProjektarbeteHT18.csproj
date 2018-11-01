@@ -51,6 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Business Logic Layer\EpisodeUpdater.cs" />
+    <Compile Include="Business Logic Layer\Exceptions\ExceptionHandler.cs" />
     <Compile Include="Business Logic Layer\FeedManager.cs" />
     <Compile Include="Business Logic Layer\CategoryList.cs" />
     <Compile Include="Business Logic Layer\Interface\IListable.cs" />
@@ -61,6 +62,7 @@
     <Compile Include="Business Logic Layer\PodCast\PodCast.cs" />
     <Compile Include="Business Logic Layer\PodCast\PodCastList.cs" />
     <Compile Include="Business Logic Layer\RSSReader.cs" />
+    <Compile Include="Business Logic Layer\Validator.cs" />
     <Compile Include="Data Access Layer\Serializer.cs" />
     <Compile Include="Presentation Layer\Form1.cs">
       <SubType>Form</SubType>
@@ -98,7 +100,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Backup\" />
-    <Folder Include="Business Logic Layer\Exception\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

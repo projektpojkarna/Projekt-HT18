@@ -62,6 +62,7 @@
             this.txtSortCategory = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.btnRemoveFilter = new System.Windows.Forms.Button();
+            this.lblErrorMsg = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -185,26 +186,27 @@
             // 
             // cb_frekvens
             // 
+            this.cb_frekvens.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cb_frekvens.FormattingEnabled = true;
             this.cb_frekvens.Items.AddRange(new object[] {
             "5",
             "10",
             "15"});
-            this.cb_frekvens.Location = new System.Drawing.Point(217, 328);
+            this.cb_frekvens.Location = new System.Drawing.Point(209, 325);
             this.cb_frekvens.Name = "cb_frekvens";
             this.cb_frekvens.Size = new System.Drawing.Size(52, 24);
             this.cb_frekvens.TabIndex = 8;
-            this.cb_frekvens.Text = "Välj frekvens...";
             // 
             // cb_Kategori
             // 
+            this.cb_Kategori.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cb_Kategori.FormattingEnabled = true;
+            this.cb_Kategori.ImeMode = System.Windows.Forms.ImeMode.NoControl;
             this.cb_Kategori.Location = new System.Drawing.Point(17, 325);
             this.cb_Kategori.MaxDropDownItems = 50;
             this.cb_Kategori.Name = "cb_Kategori";
             this.cb_Kategori.Size = new System.Drawing.Size(183, 24);
             this.cb_Kategori.TabIndex = 9;
-            this.cb_Kategori.Text = "Lägg till en kategori först..";
             // 
             // label1
             // 
@@ -220,7 +222,7 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.4F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(214, 305);
+            this.label2.Location = new System.Drawing.Point(206, 305);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(127, 17);
             this.label2.TabIndex = 11;
@@ -346,7 +348,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(275, 331);
+            this.label7.Location = new System.Drawing.Point(267, 328);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(58, 17);
             this.label7.TabIndex = 23;
@@ -391,11 +393,21 @@
             this.btnRemoveFilter.UseVisualStyleBackColor = true;
             this.btnRemoveFilter.Click += new System.EventHandler(this.btnRemoveFilter_Click);
             // 
+            // lblErrorMsg
+            // 
+            this.lblErrorMsg.AutoSize = true;
+            this.lblErrorMsg.Location = new System.Drawing.Point(385, 305);
+            this.lblErrorMsg.Name = "lblErrorMsg";
+            this.lblErrorMsg.Size = new System.Drawing.Size(40, 17);
+            this.lblErrorMsg.TabIndex = 29;
+            this.lblErrorMsg.Text = "Error";
+            // 
             // frmRSSReader
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1107, 575);
+            this.Controls.Add(this.lblErrorMsg);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.txtEpisodeDescription);
@@ -467,6 +479,7 @@
         private System.Windows.Forms.TextBox txtSortCategory;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Button btnRemoveFilter;
+        private System.Windows.Forms.Label lblErrorMsg;
     }
 }
 

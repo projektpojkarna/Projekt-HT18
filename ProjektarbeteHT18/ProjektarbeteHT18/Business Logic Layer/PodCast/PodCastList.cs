@@ -13,7 +13,7 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
             try
             {
                 return this.Single((p) => p.Url == url);
-            } catch(Exception e)
+            } catch (Exception e)
             {
 
             }

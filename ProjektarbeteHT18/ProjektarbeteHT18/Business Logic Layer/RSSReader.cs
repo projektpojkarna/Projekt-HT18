@@ -10,7 +10,15 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
 {
     public class RSSReader
     {
-        private async Task<SyndicationFeed> ReadRSSAsync(string url)
+
+        public static async Task<PodCast> GetUpdatedPod(PodCast p) {
+            var updatedFeed = await ReadRSSAsync(p.Url);
+            p.Name = updatedFeed.Title.Text;
+            p.Episodes = PodCastEpisodeList<PodCastEpisode>.FromSyndicationItems(updatedFeed.Items);
+            return p;
+        }
+
+        private static async Task<SyndicationFeed> ReadRSSAsync(string url)
         {
             var syndicationFeed = await Task.Run(() => {
                 var settings = new XmlReaderSettings() { Async = true, DtdProcessing = DtdProcessing.Parse, MaxCharactersFromEntities = 1024 };
@@ -19,7 +27,6 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
                     var f = SyndicationFeed.Load(reader);
                     reader.Close();
                     return f;
-
                 }
             });
             return syndicationFeed;
