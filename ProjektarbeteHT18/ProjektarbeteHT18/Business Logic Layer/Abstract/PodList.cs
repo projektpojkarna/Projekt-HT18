@@ -9,11 +9,18 @@ using System.Windows.Forms;
 
 namespace ProjektarbeteHT18.Business_Logic_Layer
 {
-    public abstract class CustomList<T> where T : IListable
+    public abstract class PodList<T> where T : IListable
     {
         [JsonProperty] protected List<T> InnerList { set; get; }
+        public int Count
+        {
+            get
+            {
+                return InnerList.Count;
+            }
+        }
 
-        public CustomList()
+        public PodList()
         {
             InnerList = new List<T>();
         }
@@ -41,6 +48,11 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
         public virtual T Get(T obj)
         {
             return InnerList.Single((o) => o.Equals(obj));
+        }
+
+        public T Get(int index)
+        {
+            return InnerList[index];
         }
 
         public virtual bool Contains(T obj)

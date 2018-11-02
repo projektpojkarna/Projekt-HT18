@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 namespace ProjektarbeteHT18.Business_Logic_Layer
 {
-    public class CategoryList<T> : CustomList<Category>
+    public class CategoryList<T> : PodList<Category>
     {
         public CategoryList() : base() {}
 

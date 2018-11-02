@@ -8,18 +8,19 @@ using System.Drawing;
 using System.Collections.Generic;
 using ProjektarbeteHT18.Business_Logic_Layer.Exceptions;
 using ProjektarbeteHT18.Business_Logic_Layer.Categories;
+using ProjektarbeteHT18.Business_Logic_Layer.Pod;
 
 namespace ProjektarbeteHT18
 {
     public partial class frmRSSReader : Form
     {
-        FeedManager Fm;
+        PodManager Fm;
         string Filter;
 
         public frmRSSReader()
         {
             InitializeComponent();
-            Fm = FeedManager.FromJsonOrDefault("jsonData.json");
+            Fm = PodManager.FromJsonOrDefault("jsonData.json");
             Fm.OnPodUpdate += UpdatePodList;
             Fm.OnError += PrintError;
 
@@ -53,7 +54,7 @@ namespace ProjektarbeteHT18
         }
 
 
-        private void UpdateEpisodeDetails(IPodCastEpisode episode)
+        private void UpdateEpisodeDetails(IEpisode episode)
         {
             lb_PodcastAvsnitt.Text = episode.Name;
             txtEpisodeDescription.Text = episode.Description;
@@ -63,13 +64,13 @@ namespace ProjektarbeteHT18
         //Uppdaterar listan med podcastavsnitt
         private void UpdateEpisodeList(PodCast feed)
         {
-            PodCastEpisodeList<PodCastEpisode> epList = feed.Episodes;
+            EpisodeList<Episode> epList = feed.Episodes;
 
             lvPodCastEpisodes.Items.Clear();
             lvPodCastEpisodes.Items.AddRange(epList.ToListViewItems());
             if(epList != null && epList.Count > 0)
             {
-                UpdateEpisodeDetails(epList[0]);
+                UpdateEpisodeDetails(epList.Get(0));
             }
         }
         
@@ -85,7 +86,7 @@ namespace ProjektarbeteHT18
                     {
                         if(p.Category.StartsWith(Filter, StringComparison.InvariantCultureIgnoreCase))
                         {
-                            string numberOfEpisodes = p.Episodes.Count.ToString();
+                            string numberOfEpisodes = (p.Episodes != null) ? p.Episodes.Count.ToString() : "0";
                             ListViewItem lvItem = new ListViewItem(new[] {
                             numberOfEpisodes, p.Name, p.UpdateInterval.ToString(), p.Category
                         });
@@ -139,8 +140,19 @@ namespace ProjektarbeteHT18
         {
             var url = txt_Url.Text;
             var category = cb_Kategori.SelectedItem.ToString();
-            int.TryParse(cb_frekvens.SelectedItem.ToString(), out int interval);
-            await Fm.AddNewPod(url, category, interval);
+            if (!Validator.ValidateUrl(url))
+            {
+                PrintError("Ange giltig URL.");
+            }
+            else if(!Validator.ValidateUrl(category))
+            {
+                PrintError("Ange en kategori.");
+            }
+            else
+            {
+                int.TryParse(cb_frekvens.SelectedItem.ToString(), out int interval);
+                await Fm.AddNewPod(url, category, interval);
+            }
 
         }
 
@@ -167,7 +179,7 @@ namespace ProjektarbeteHT18
                 var selectedPodIndex = lv_Podcast.FocusedItem.Index;
                 var selectedEpisodeIndex = lvPodCastEpisodes.FocusedItem.Index;
                 var pod = Fm.PodCastList.Get(selectedPodIndex);
-                var episode = pod.Episodes[selectedEpisodeIndex];
+                var episode = pod.Episodes.Get(selectedEpisodeIndex);
                 UpdateEpisodeDetails(episode);
             }
         }
@@ -226,7 +238,7 @@ namespace ProjektarbeteHT18
                 var newUrl = txt_Url.Text;
                 int.TryParse(cb_frekvens.SelectedItem.ToString(), out int newInterval);
                 var newCategory = cb_Kategori.SelectedItem.ToString();
-                await Fm.UpdateExistingPodCast(selectedPodIndex, newUrl, newInterval, newCategory);
+                await Fm.UpdatePodProperties(selectedPodIndex, newUrl, newInterval, newCategory);
             }
           
         }

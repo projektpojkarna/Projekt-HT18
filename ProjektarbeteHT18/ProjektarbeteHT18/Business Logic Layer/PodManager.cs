@@ -1,45 +1,42 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using System.Threading.Tasks;
-using ProjektarbeteHT18.Business_Logic_Layer.Interface;
-using System.ServiceModel.Syndication;
-using System.Xml;
 using System.Timers;
-using System.Diagnostics;
 using Newtonsoft.Json;
 using System.IO;
 using ProjektarbeteHT18.Business_Logic_Layer.Exceptions;
 using ProjektarbeteHT18.Business_Logic_Layer.Categories;
+using ProjektarbeteHT18.Business_Logic_Layer.Pod;
 
 namespace ProjektarbeteHT18.Business_Logic_Layer
 {
-    class FeedManager
+    class PodManager
     {
-        public PodCastList<PodCast> PodCastList { get; set; }
-        public CategoryList<Category> CategoryList { get; set; }
-
-        public delegate void PodCastAddedHandler();
-        public event PodCastAddedHandler OnPodUpdate;
-
-        public delegate void ErrorHandler(string msg);
-        public event ErrorHandler OnError;
-
+        //*** Properties
+        public PodCastList<PodCast> PodCastList { get; }
+        public CategoryList<Category> CategoryList { get; }
+        public RSSManager RSSManager;
         [JsonIgnore] public ExceptionHandler ExceptionHandler { get; set; }
 
+        //Används för uppdatering av pods
         private System.Timers.Timer t;
         int ElapsedMinutes;
 
-        Serializer<FeedManager> Serializer;
+        //*** Event handlers:
+        //När en listan med pods uppdetaras
+        public delegate void PodUpdatedHandler();
+        public event PodUpdatedHandler OnPodUpdate;
+        //När ett fel uppstår
+        public delegate void ErrorHandler(string msg);
+        public event ErrorHandler OnError;
 
-        public static FeedManager FromJsonOrDefault(string jsonFile)
+        //Statisk metod för att återskapa från serialiserad JSON
+        public static PodManager FromJsonOrDefault(string jsonFile)
         {
-            var serializer = new Serializer<FeedManager>(jsonFile);
-
+            var serializer = new Serializer<PodManager>(jsonFile);
             if (File.Exists(jsonFile))
             {
                 var fm = serializer.Deserialize();
+                //Uppdaterar alla podcasts 
                 foreach(var p in fm.PodCastList.GetAll())
                 {
                     fm.UpdatePodCast(p);
@@ -48,12 +45,11 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
             }
             else
             {
-                return new FeedManager();
+                return new PodManager();
             }
         }
 
-
-        private FeedManager()
+        [JsonConstructor]public PodManager()
         {
             CategoryList = new CategoryList<Category>();
             PodCastList = new PodCastList<PodCast>();
@@ -63,15 +59,18 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
             t.Elapsed += new ElapsedEventHandler(RefreshPods);
             t.Start();
 
-            Serializer = new Serializer<FeedManager>("jsonData.json");
+            
             ExceptionHandler = new ExceptionHandler();
+            RSSManager = new RSSManager(ExceptionHandler);
+
         }
 
+        //Serialiserar
         public void Serialize()
         {
+            Serializer<PodManager> Serializer = new Serializer<PodManager>("jsonData.json");
             Serializer.Serialize(this);
         }
-
 
         //Tar bort en kategori; kollar först att kategorin inte används
         public void RemoveCategory(string category)
@@ -90,38 +89,37 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
         //Lägger till en ny podcast
         public async Task AddNewPod(string url, string category, int updateInterval)
         {
-            //TODO: Kolla först om poden finns!
-
-           //Läs in RSS-flöde, skapa podcast-objekt och lägg till i listan
-            await ReadRSSAsync(url).ContinueWith((t) => {
-                if(t.Exception == null && t.Result != null)
+            //Läser in RSS-feed, skapar och skapar PodCast under förutsättning att
+            //ingenting gått fel
+            await RSSManager.GetPodCast(url).ContinueWith((t) => {
+                if (t.Exception == null && t.Result != null)
                 {
-                    var feed = t.Result;
-                    var pod = PodCast.FromSyndicationFeed(feed, url);
+                    var pod = t.Result;
                     pod.Category = category;
                     pod.UpdateInterval = updateInterval;
                     PodCastList.Add(pod);
-
                     FirePodUpdated();
                 }
-            });    
+            }); 
         }
 
+        //Ta bort en pod ur listan och uppdatera UI
         public async Task RemovePod(string url)
         {
             await Task.Run(() =>
             {
                 PodCastList.Remove(url);
-                FirePodUpdated();
             });
+            FirePodUpdated();
         }
 
-        //Gör om metoden; ta bort poden och lägg till igen?
-        public async Task UpdateExistingPodCast(int index, string newUrl, int newInterval, string newCategory)
+        //Uppdaterar egenskaper hos en existerande podcast
+        public async Task UpdatePodProperties(int index, string newUrl, int newInterval, string newCategory)
         {
             var pod = PodCastList.Get(index);
             pod.UpdateInterval = newInterval;
             pod.Category = newCategory;
+            //Om podens URL är uppdaterad; kolla efter nya avsnitt
             if (newUrl != pod.Url)
             {
                 pod.Url = newUrl;
@@ -133,28 +131,19 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
             }
         }
 
+        //Uppdaterar en podcast
         private async Task UpdatePodCast(PodCast pod)
         {
-            var updatedFeed = await ReadRSSAsync(pod.Url);
-            UpdatePodCast(pod, updatedFeed);
-        }
-
-        //Uppdaterar en podcast
-        private void UpdatePodCast(PodCast pod, SyndicationFeed updatedFeed)
-        {
-            pod.Name = updatedFeed.Title.Text;
-            pod.LastUpdated = updatedFeed.LastUpdatedTime;
-            pod.Episodes = PodCastEpisodeList<PodCastEpisode>.FromSyndicationItems(updatedFeed.Items);
+            await RSSManager.UpdatePodCast(pod);
             FirePodUpdated();
         }
 
-        //Kollar om en podcast har den senaste uppdateringen
+        //Uppdaterar en podcast om det finns ett nytt avsnitt
         private async Task CheckForPodUpdates(PodCast pod)
         {
-            var updatedFeed = await ReadRSSAsync(pod.Url);
-            if (pod.LastUpdated < updatedFeed.LastUpdatedTime)
-            {
-                UpdatePodCast(pod, updatedFeed);
+            bool updated = await RSSManager.UpdatePodIfNeeded(pod);
+            if (updated) {
+                FirePodUpdated();
             }
         }
 
@@ -167,34 +156,6 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
             {
                 await CheckForPodUpdates(p);
             }
-        }
-
-        private async Task<SyndicationFeed> ReadRSSAsync(string url)
-        {
-            var result = await Task.Run(() =>
-            {
-                var settings = new XmlReaderSettings()
-                {
-                    Async = true,
-                    DtdProcessing = DtdProcessing.Parse,
-                    MaxCharactersFromEntities = 1024
-                };
-                SyndicationFeed f = null;
-                try
-                {
-                    using (XmlReader reader = XmlReader.Create(url, settings))
-                    {
-                        f = SyndicationFeed.Load(reader);
-                        reader.Close();
-                    }
-                }
-                catch (Exception e)
-                {
-                    ExceptionHandler.HandleException(e);
-                }
-                return f;
-            });
-            return result;
         }
 
         //Metod för att hantera händelseanrop

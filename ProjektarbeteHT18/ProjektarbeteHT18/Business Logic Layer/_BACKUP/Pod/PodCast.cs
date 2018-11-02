@@ -1,14 +1,11 @@
 ﻿using ProjektarbeteHT18.Business_Logic_Layer.Interface;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.ServiceModel.Syndication;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Newtonsoft.Json;
 
-namespace ProjektarbeteHT18.Business_Logic_Layer
+namespace ProjektarbeteHT18.Business_Logic_Layer.Pod
 {
     public class PodCast : IPodCastFeed, IListable
     {
