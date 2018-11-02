@@ -21,7 +21,7 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
         private System.Timers.Timer t;
         int ElapsedMinutes;
 
-        //*** Event handlers:
+        //*** Event handlers
         //När en listan med pods uppdetaras
         public delegate void PodUpdatedHandler();
         public event PodUpdatedHandler OnPodUpdate;
