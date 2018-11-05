@@ -7,8 +7,10 @@ using ProjektarbeteHT18.Business_Logic_Layer.Pod;
 
 namespace ProjektarbeteHT18.Business_Logic_Layer
 {
+    //Klass för hantering av RSS-inläsning
     public class RSSManager
     {
+        //Skickar vidare Exceptions till UI för hantering
         ExceptionHandler ExceptionHandler;
 
         public RSSManager(ExceptionHandler handler)
@@ -35,7 +37,7 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
             return PerformPodUpdate(p, updatedFeed);
         }
 
-        //Läser in en RSS-feed och skapar ett podcast-objekt
+        //Läser in en RSS-feed och returnerar ett podcast-objekt
         public async Task<PodCast> GetPodCast(string url)
         {
             return PodCast.FromSyndicationFeed(await ReadRSSAsync(url), url);
@@ -51,6 +53,7 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
         }
 
         //Läser RSS-feed och returnerar ett SyndicationFeed-objekt
+        //Returnerar null om inläsningen misslyckas
         private async Task<SyndicationFeed> ReadRSSAsync(string url)
         {
             //Läser url och returnerar ett SyndicationFeed-objekt

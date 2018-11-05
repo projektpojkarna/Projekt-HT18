@@ -355,9 +355,9 @@
             // 
             // btnFilterCategory
             // 
-            this.btnFilterCategory.Location = new System.Drawing.Point(217, 21);
+            this.btnFilterCategory.Location = new System.Drawing.Point(199, 53);
             this.btnFilterCategory.Name = "btnFilterCategory";
-            this.btnFilterCategory.Size = new System.Drawing.Size(75, 23);
+            this.btnFilterCategory.Size = new System.Drawing.Size(93, 23);
             this.btnFilterCategory.TabIndex = 26;
             this.btnFilterCategory.Text = "Sortera";
             this.btnFilterCategory.UseVisualStyleBackColor = true;
@@ -365,9 +365,9 @@
             // 
             // txtSortCategory
             // 
-            this.txtSortCategory.Location = new System.Drawing.Point(6, 24);
+            this.txtSortCategory.Location = new System.Drawing.Point(6, 25);
             this.txtSortCategory.Name = "txtSortCategory";
-            this.txtSortCategory.Size = new System.Drawing.Size(205, 22);
+            this.txtSortCategory.Size = new System.Drawing.Size(286, 22);
             this.txtSortCategory.TabIndex = 27;
             // 
             // grpFilter
@@ -380,11 +380,11 @@
             this.grpFilter.Size = new System.Drawing.Size(298, 88);
             this.grpFilter.TabIndex = 28;
             this.grpFilter.TabStop = false;
-            this.grpFilter.Text = "Sortera";
+            this.grpFilter.Text = "Sortera efter kategori";
             // 
             // btnRemoveFilter
             // 
-            this.btnRemoveFilter.Location = new System.Drawing.Point(186, 53);
+            this.btnRemoveFilter.Location = new System.Drawing.Point(6, 53);
             this.btnRemoveFilter.Name = "btnRemoveFilter";
             this.btnRemoveFilter.Size = new System.Drawing.Size(106, 23);
             this.btnRemoveFilter.TabIndex = 28;
@@ -424,7 +424,6 @@
             this.Name = "frmRSSReader";
             this.Text = "Lägg till en kategori först..";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmRSSReader_FormClosing);
-            this.Load += new System.EventHandler(this.Form1_Load);
             this.grpFilter.ResumeLayout(false);
             this.grpFilter.PerformLayout();
             this.ResumeLayout(false);

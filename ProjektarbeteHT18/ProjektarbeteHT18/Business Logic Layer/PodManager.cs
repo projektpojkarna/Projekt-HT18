@@ -18,7 +18,7 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
         [JsonIgnore] public ExceptionHandler ExceptionHandler { get; set; }
 
         //Används för uppdatering av pods
-        private System.Timers.Timer t;
+        private Timer t;
         int ElapsedMinutes;
 
         //*** Event handlers
@@ -54,22 +54,39 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
             CategoryList = new CategoryList<Category>();
             PodCastList = new PodCastList<PodCast>();
 
-            t = new System.Timers.Timer();
+            //Timer anropar Elapsed-eventet var 5:e minut,
+            //RefreshPods kollar vilka pods behöver uppdatering
+            //Användaren kan enbart välja uppdateringsintervaller med 5-minutersintervall
+            t = new Timer();
             t.Interval = 30000;
             t.Elapsed += new ElapsedEventHandler(RefreshPods);
             t.Start();
 
-            
             ExceptionHandler = new ExceptionHandler();
             RSSManager = new RSSManager(ExceptionHandler);
 
         }
 
-        //Serialiserar
+        //Serialiserar PodManager till JSON
+        //Listan med podcastavsnitt kommer ignoreras (markerad med [JsonIgnore])
         public void Serialize()
         {
             Serializer<PodManager> Serializer = new Serializer<PodManager>("jsonData.json");
             Serializer.Serialize(this);
+        }
+
+        public void AddCategory(string categoryName)
+        {
+            CategoryList.Add(new Category(categoryName));
+        }
+
+        public void RenameCategory(string categoryName, string newCategoryName)
+        {
+            CategoryList.Rename(categoryName, newCategoryName);
+            var podsToUpdate = PodCastList.GetPodsByCategory(categoryName);
+            podsToUpdate.Where((p) => p.Category == categoryName).ToList()
+                .ForEach((p) => p.Category = newCategoryName);
+            FirePodUpdated();
         }
 
         //Tar bort en kategori; kollar först att kategorin inte används
@@ -92,6 +109,7 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
             //Läser in RSS-feed, skapar och skapar PodCast under förutsättning att
             //ingenting gått fel
             await RSSManager.GetPodCast(url).ContinueWith((t) => {
+                //Lägger bara till poden om ingenting gick fel
                 if (t.Exception == null && t.Result != null)
                 {
                     var pod = t.Result;
@@ -158,7 +176,7 @@ namespace ProjektarbeteHT18.Business_Logic_Layer
             }
         }
 
-        //Metod för att hantera händelseanrop
+        //Metod för att hantera uppdatering av UI
         private void FirePodUpdated()
         {
             if (OnPodUpdate != null)

@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace ProjektarbeteHT18.Business_Logic_Layer.Pod
 {
+    //Representerar en lista med podcastavsnitt
     public class PodCastList<T> : PodList<PodCast>
     {
         public PodCastList() : base() { }
@@ -28,15 +25,22 @@ namespace ProjektarbeteHT18.Business_Logic_Layer.Pod
             if(podToRemove != null)
                 InnerList.Remove(podToRemove);
         }
-
+        //Hämtar en pod
         public PodCast Get(string url)
         {
-            return InnerList.Single((p) => p.Url == url);
+            return InnerList.SingleOrDefault((p) => p.Url == url);
         }
 
+        //Kollar om en pod med samma url finns i listan
         public override bool Contains(PodCast pod)
         {
             return InnerList.Any((p) => p.Url == pod.Url);
+        }
+
+        //Returnerar en lista med alla pods i en viss kategori
+        public List<PodCast> GetPodsByCategory(string category)
+        {
+            return InnerList.Where((p) => p.Category == category).ToList();
         }
 
     }

@@ -1,12 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
-using System.ServiceModel.Syndication;
-using System.Xml;
 using ProjektarbeteHT18.Business_Logic_Layer;
-using System.Threading.Tasks;
-using System.Drawing;
-using System.Collections.Generic;
-using ProjektarbeteHT18.Business_Logic_Layer.Exceptions;
 using ProjektarbeteHT18.Business_Logic_Layer.Categories;
 using ProjektarbeteHT18.Business_Logic_Layer.Pod;
 
@@ -39,13 +33,13 @@ namespace ProjektarbeteHT18
         //Skriver ut felmeddelande
         private void PrintError(string msg)
         {
-              MessageBox.Show("Något gick fel vid inläsning av URL", "Felaktig inläsning",
-              MessageBoxButtons.OK, MessageBoxIcon.Error);
+            PrintError(msg, "Något gick fel");
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        private void PrintError(string msg, string title)
         {
-
+            MessageBox.Show(msg, title,
+            MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         //Uppdaterar textfältet med avsnittsdetaljer
@@ -144,13 +138,11 @@ namespace ProjektarbeteHT18
            
             if (!Validator.ValidateUrl(url))
             {
-                MessageBox.Show("Ange giltig Url", "Ogiltligt URL",
-                MessageBoxButtons.OK, MessageBoxIcon.Error);
+                PrintError("Ange giltig Url", "Ogiltligt URL");
             }
             else if(!Validator.ValidateCategory(category))
             {
-                MessageBox.Show("Ange en kategori", "Ingen kategori valt",
-                MessageBoxButtons.OK, MessageBoxIcon.Error);
+                PrintError("Ange en kategori", "Ingen kategori valt");
             }
             else
             {
@@ -190,18 +182,41 @@ namespace ProjektarbeteHT18
 
         private void btnAddNewCategory_Click(object sender, EventArgs e)
         {
-            PodManager.CategoryList.Add(new Category(txtCategory.Text));
-            UpdateCategory();
-            txtCategory.Clear();
+            var catToAdd = txtCategory.Text;
+            if (Validator.ValidateCategory(catToAdd))
+            {
+                PodManager.CategoryList.Add(new Category(catToAdd));
+                UpdateCategory();
+                txtCategory.Clear();
+            }
+            else
+            {
+                PrintError("Giltigt kategorinamn innehåller minst 3 tecken och kan innehålla både bokstäver " +
+                    "eller siffror. Inga specialtecken", "Felaktigt kategorinamn");
+            }
+
         }
 
         private void btnSaveCategoryDetails_Click(object sender, EventArgs e)
         {
-            string selected = lvCategories.FocusedItem.Text;
-            PodManager.CategoryList.Rename(selected, txtCategory.Text);
-
-            UpdateCategory();
-            txtCategory.Clear();
+            string selectedCat = lvCategories.FocusedItem != null ? lvCategories.FocusedItem.Text : "";
+            var newCatName = txtCategory.Text;
+            if (!Validator.ValidateCategory(newCatName))
+            {
+                PrintError("Giltigt kategorinamn innehåller minst 3 tecken och kan innehålla både bokstäver " +
+                    "eller siffror. Inga specialtecken.", "Felaktigt kategorinamn");
+            }
+            else if(String.IsNullOrEmpty(selectedCat))
+            {
+                PrintError("För att spara ändringar i en kategori måste du först välja" +
+                    "en kattegori i listan.", "Välj en kategori");
+            }
+            else
+            {
+                PodManager.RenameCategory(selectedCat, newCatName);
+                UpdateCategory();
+                txtCategory.Clear();
+            }
         }
 
         private void lvCategories_SelectedIndexChanged(object sender, EventArgs e)

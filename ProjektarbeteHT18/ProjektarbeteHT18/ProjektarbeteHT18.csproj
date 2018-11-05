@@ -56,12 +56,11 @@
     <Compile Include="Business Logic Layer\Interface\ICategory.cs" />
     <Compile Include="Business Logic Layer\PodClasses\EpisodeList.cs" />
     <Compile Include="Business Logic Layer\PodClasses\PodCastList.cs" />
-    <Compile Include="Business Logic Layer\Timer.cs" />
     <Compile Include="Business Logic Layer\Exceptions\ExceptionHandler.cs" />
     <Compile Include="Business Logic Layer\PodManager.cs" />
     <Compile Include="Business Logic Layer\Interface\IListable.cs" />
-    <Compile Include="Business Logic Layer\Interface\IPodcastEpisode.cs" />
-    <Compile Include="Business Logic Layer\Interface\IPodCastFeed.cs" />
+    <Compile Include="Business Logic Layer\Interface\IEpisode.cs" />
+    <Compile Include="Business Logic Layer\Interface\IPodCast.cs" />
     <Compile Include="Business Logic Layer\PodClasses\Episode.cs" />
     <Compile Include="Business Logic Layer\PodClasses\PodCast.cs" />
     <Compile Include="Business Logic Layer\RSSManager.cs" />

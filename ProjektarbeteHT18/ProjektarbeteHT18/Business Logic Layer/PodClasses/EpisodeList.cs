@@ -2,15 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel.Syndication;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ProjektarbeteHT18.Business_Logic_Layer.Pod
 {
+    //Representerar en lista med podcastavsnitt
     public class EpisodeList<T> : PodList<Episode>
     {
-
+        //Tar emot en lista med SyndicationItems och skapar en EpisodeList
         public static EpisodeList<Episode> FromSyndicationItems(IEnumerable<SyndicationItem> syndicationItems)
         {
             var episodeList = new EpisodeList<Episode>();
@@ -23,6 +22,7 @@ namespace ProjektarbeteHT18.Business_Logic_Layer.Pod
 
         public EpisodeList() : base() { }
 
+        //Skapar en array med ListViewItem
         public override ListViewItem[] ToListViewItems()
         {
             var dataToDisplay = new List<ListViewItem>();
