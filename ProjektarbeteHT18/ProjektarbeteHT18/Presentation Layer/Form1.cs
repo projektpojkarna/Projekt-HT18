@@ -39,16 +39,8 @@ namespace ProjektarbeteHT18
         //Skriver ut felmeddelande
         private void PrintError(string msg)
         {
-            if(lblErrorMsg.InvokeRequired)
-            {
-                lblErrorMsg.Invoke((MethodInvoker)delegate
-                {
-                    lblErrorMsg.Text = msg;
-                });
-            } else
-            {
-                lblErrorMsg.Text = msg;
-            }
+              MessageBox.Show("Något gick fel vid inläsning av URL", "Felaktig inläsning",
+              MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -143,14 +135,22 @@ namespace ProjektarbeteHT18
         private async void btnAddNewPodCast_Click(object sender, EventArgs e)
         {
             var url = txtURL.Text;
-            var category = cbCategory.SelectedItem.ToString();
+            string category = "";
+
+            if (cbCategory.SelectedItem != null)
+            {
+                category = cbCategory.SelectedItem.ToString();
+            }
+           
             if (!Validator.ValidateUrl(url))
             {
-                PrintError("Ange giltig URL.");
+                MessageBox.Show("Ange giltig Url", "Ogiltligt URL",
+                MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            else if(!Validator.ValidateUrl(category))
+            else if(!Validator.ValidateCategory(category))
             {
-                PrintError("Ange en kategori.");
+                MessageBox.Show("Ange en kategori", "Ingen kategori valt",
+                MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             else
             {

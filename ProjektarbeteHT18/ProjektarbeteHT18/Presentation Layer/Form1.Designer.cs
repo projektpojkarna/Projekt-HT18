@@ -62,7 +62,6 @@
             this.txtSortCategory = new System.Windows.Forms.TextBox();
             this.grpFilter = new System.Windows.Forms.GroupBox();
             this.btnRemoveFilter = new System.Windows.Forms.Button();
-            this.lblErrorMsg = new System.Windows.Forms.Label();
             this.grpFilter.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -393,23 +392,11 @@
             this.btnRemoveFilter.UseVisualStyleBackColor = true;
             this.btnRemoveFilter.Click += new System.EventHandler(this.btnRemoveFilter_Click);
             // 
-            // lblErrorMsg
-            // 
-            this.lblErrorMsg.AutoSize = true;
-            this.lblErrorMsg.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblErrorMsg.ForeColor = System.Drawing.Color.Red;
-            this.lblErrorMsg.Location = new System.Drawing.Point(386, 297);
-            this.lblErrorMsg.Name = "lblErrorMsg";
-            this.lblErrorMsg.Size = new System.Drawing.Size(54, 25);
-            this.lblErrorMsg.TabIndex = 29;
-            this.lblErrorMsg.Text = "Error";
-            // 
             // frmRSSReader
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1107, 575);
-            this.Controls.Add(this.lblErrorMsg);
             this.Controls.Add(this.grpFilter);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.txtEpisodeDescription);
@@ -481,7 +468,6 @@
         private System.Windows.Forms.TextBox txtSortCategory;
         private System.Windows.Forms.GroupBox grpFilter;
         private System.Windows.Forms.Button btnRemoveFilter;
-        private System.Windows.Forms.Label lblErrorMsg;
     }
 }
 
